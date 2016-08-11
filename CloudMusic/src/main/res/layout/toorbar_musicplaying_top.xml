@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="48dp"
+    android:id="@+id/tb_musicplaying_top"
+    android:background="@color/colorDrawerBack"
+    android:weightSum="1">
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <ImageView
+        android:id="@+id/iv_back"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_centerVertical="true"
+        android:src="@drawable/ic_chevron_left_white_48" />
+
+    <ImageView
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:id="@+id/iv_toolbar_music_share"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="8dp"
+        android:src="@drawable/ic_share_white_48dp"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/tv_viewTitle"
+        android:layout_centerInParent="true"
+        />
+    <RelativeLayout
+        android:layout_toEndOf="@+id/iv_back"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:orientation="vertical">
+        <TextView
+            android:id="@+id/tv_toolbar_musicName"
+            android:layout_width="wrap_content"
+            android:layout_height="24dp"
+            android:paddingTop="4dp" />
+        <TextView
+            android:id="@+id/tv_toolbar_musicArtist"
+            android:layout_width="wrap_content"
+            android:layout_height="24dp"
+            android:layout_marginTop="24dp"
+            android:textSize="12dp"/>
+    </RelativeLayout>
+</RelativeLayout>
+</android.support.v7.widget.Toolbar>

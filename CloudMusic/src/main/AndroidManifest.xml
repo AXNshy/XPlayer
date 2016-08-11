@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.ken.android.CloudMusic">
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <application
+        android:name=".Activity.MyApp"
+        android:allowBackup="true"
+        android:icon="@drawable/appicon"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+        <activity android:name=".Activity.LoginActivity">
+        </activity>
+        <activity android:name=".Activity.Launch"
+            android:launchMode="singleTask">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".Activity.User_InfoShowActivity">
+
+        </activity>
+        <activity android:name=".Activity.MusicListActivity">
+            <intent-filter>
+            <action android:name="com.axnshy.player.action.allmusic"/>
+            <action android:name="com.axnshy.player.action.favoritemusic"/>
+            <action android:name="com.axnshy.player.action.download"/>
+            <action android:name="com.axnshy.player.action.recentplay"/>
+        </intent-filter>
+        </activity>
+        <activity android:name=".Activity.RegisterActivity">
+
+        </activity>
+        <activity android:name=".Activity.MusicPlayingActivity">
+
+        </activity>
+        <service android:name=".PlayerService">
+            <intent-filter >
+                <action android:name="com.axnshy.action.PlayerService"/>
+
+            </intent-filter>
+        </service>
+        <receiver android:name=".RemoteControlReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.MEDIA_BUTTON"/>
+            </intent-filter>
+        </receiver>
+    </application>
+</manifest>

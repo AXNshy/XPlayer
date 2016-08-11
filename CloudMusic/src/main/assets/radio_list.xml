@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN"
+    "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+    <dict>
+        <key>NPR</key>
+        <string>www.npr.org</string>
+        <key>CNN</key>
+        <string>www.cnn.com</string>
+        <key>VOA</key>
+        <string>www.voa.com</string>
+        <key>BBC</key>
+        <string>www.bbc.com</string>
+    </dict>
+</plist>

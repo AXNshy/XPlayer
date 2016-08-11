@@ -1,0 +1,94 @@
+package com.ken.android.CloudMusic.FilesRead;
+
+import android.os.Bundle;
+import android.os.Parcel;
+import android.os.Parcelable;
+
+/**
+ * Created by axnshy on 16/8/9.
+ */
+public class ListsInfo implements Parcelable{
+    private int listId;
+    private String listName;
+    private int listCount;
+    private String backgroundPath;
+
+    public ListsInfo() {
+    }
+
+    public ListsInfo(String listName, int listCount) {
+        this.listName = listName;
+        this.listCount = listCount;
+    }
+
+    protected ListsInfo(Parcel in) {
+        listId = in.readInt();
+        listName = in.readString();
+        listCount = in.readInt();
+        backgroundPath = in.readString();
+    }
+
+    public static final Creator<ListsInfo> CREATOR = new Creator<ListsInfo>() {
+        @Override
+        public ListsInfo createFromParcel(Parcel in) {
+            ListsInfo list = new ListsInfo();
+            list.setListId(in.readInt());
+            list.setListName(in.readString());
+            list.setListCount(in.readInt());
+            list.setBackgroundPath(in.readString());
+            return list;
+        }
+
+        @Override
+        public ListsInfo[] newArray(int size) {
+            return new ListsInfo[size];
+        }
+    };
+
+    public void setListId(int listId) {
+        this.listId = listId;
+    }
+
+    public void setListName(String listName) {
+        this.listName = listName;
+    }
+
+    public void setListCount(int listCount) {
+        this.listCount = listCount;
+    }
+
+    public void setBackgroundPath(String backgroundPath) {
+        this.backgroundPath = backgroundPath;
+    }
+
+    public int getListId() {
+        return listId;
+    }
+
+    public String getListName() {
+        return listName;
+    }
+
+    public int getListCount() {
+        return listCount;
+    }
+
+    public String getBackgroundPath() {
+        return backgroundPath;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeInt(listId);
+        parcel.writeString(listName);
+        parcel.writeInt(listCount);
+        parcel.writeString(backgroundPath);
+    }
+
+
+}
