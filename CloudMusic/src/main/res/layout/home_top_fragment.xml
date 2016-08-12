@@ -15,12 +15,12 @@
             android:layout_weight="1"
             android:orientation="vertical"
             android:layout_margin="8dp"
-            android:background="@color/colorCyan100"
-
+            android:background="@color/colorGreenHost"
             android:baselineAligned="false"
             android:alpha="1">
 
             <TextView
+                android:id="@+id/tv_local_music"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="#ffffff"
@@ -32,9 +32,9 @@
                 android:id="@+id/tv_music_count1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_alignParentRight="true"
-                android:layout_marginRight="8dp"
+                android:layout_below="@+id/tv_local_music"
+                android:layout_marginLeft="12dp"
+                android:layout_marginTop="4dp"
                 android:textColor="#FFFFFF"
                 />
 
@@ -48,7 +48,7 @@
         android:padding="8dp">
         <View android:layout_width="3dp"
             android:layout_height="16dp"
-            android:background="@color/colorCyan100"/>
+            android:background="@color/colorGreenHost"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -66,12 +66,12 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="8dp"
             android:text="@string/newList"
-            android:textColor="@color/colorCyan100"
+            android:textColor="@color/colorGreenHost"
             />
     </LinearLayout>
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_music_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"/>
+        android:orientation="horizontal" />
 </LinearLayout>

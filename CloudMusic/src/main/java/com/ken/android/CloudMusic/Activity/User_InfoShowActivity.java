@@ -24,7 +24,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
  * Created by axnshy on 16/8/5.
  */
 @ContentView(R.layout.personinfo)
-public class User_InfoShowActivity extends BaseActivity {
+public class User_InfoShowActivity extends BaseActivity{
 
     @ViewInject(R.id.iv_setAvatar)
     private CircleImageView avatar;

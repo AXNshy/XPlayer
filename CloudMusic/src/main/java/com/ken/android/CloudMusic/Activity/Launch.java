@@ -52,7 +52,6 @@ public class Launch extends BaseActivity implements Toolbar.OnMenuItemClickListe
     private DrawerLayout mDrawerLayout;
     private Fragment home;
     private Toolbar mToolbar;
-    private TextView top_musicName;
     private ImageView repeatImg;
     private ImageView previousImg;
     private ImageView playImg;
@@ -135,10 +134,12 @@ public class Launch extends BaseActivity implements Toolbar.OnMenuItemClickListe
         playImg = (ImageView) findViewById(R.id.iv_media_play);
         nextImg = (ImageView) findViewById(R.id.iv_media_next);
         shuffleImg = (ImageView) findViewById(R.id.iv_media_shuffle);
-        top_musicName = (TextView) findViewById(R.id.iv_toolbar_musicName);
         playerBarLayout = (LinearLayout) findViewById(R.id.music_playerBarInApp);
-        mToolbar.setOnMenuItemClickListener(this);
+        mToolbar.setTitle("");
+        mToolbar.setSubtitle("");
         setSupportActionBar(mToolbar);
+        mDrawerToggle=new ActionBarDrawerToggle(this,mDrawerLayout,mToolbar,R.string.drawer_open,R.string.drawer_close);
+        mDrawerLayout.addDrawerListener(mDrawerToggle);
         home = new Home_Fragment();
         FragmentManager fragmentManager = getFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.id_home_container, home).commit();
@@ -173,12 +174,11 @@ public class Launch extends BaseActivity implements Toolbar.OnMenuItemClickListe
         }).start();*/
     }
 
-/*
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         mDrawerToggle.syncState();// 这个必须要，没有的话进去的默认是个箭头。。正常应该是三横杠的
         super.onPostCreate(savedInstanceState);
-    }*/
+    }
 
     @Override
     public boolean onMenuItemClick(MenuItem item) {
@@ -223,7 +223,6 @@ public class Launch extends BaseActivity implements Toolbar.OnMenuItemClickListe
 
     @Override
     public void update(Observable observable, Object data) {
-        top_musicName.setText(mService.currentMusic.getMusicName());
     }
 
     @Override
@@ -292,23 +291,20 @@ public class Launch extends BaseActivity implements Toolbar.OnMenuItemClickListe
         switch (mService.getPlayerState()) {
             case 1: {
                 playImg.setImageResource(R.drawable.play);
-                top_musicName.setText(null);
                 break;
             }
             case 2: {
                 playImg.setImageResource(R.drawable.pause);
-                top_musicName.setText(mService.currentMusic.getMusicName());
                 break;
             }
             case 3: {
                 playImg.setImageResource(R.drawable.play);
-                top_musicName.setText(null);
                 break;
 
             }
 
         }
-        if (top_musicName.getText() == null && PlayerBarToken == true) {
+        if (PlayerBarToken == true && PlayerService.PlayerState == PlayerService.MediaPlayer_PAUSE) {
             ObjectAnimator.ofFloat(playerBarLayout, "translationY", 0F, 180F).setDuration(0).start();
             PlayerBarToken = false;
         }
@@ -323,9 +319,4 @@ public class Launch extends BaseActivity implements Toolbar.OnMenuItemClickListe
         }
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-
-    }
 }

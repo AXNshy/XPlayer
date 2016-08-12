@@ -3,7 +3,6 @@ package com.ken.android.CloudMusic.Activity;
 
 import android.animation.ObjectAnimator;
 import android.annotation.TargetApi;
-import android.app.Dialog;
 import android.app.FragmentManager;
 
 import android.content.ComponentName;
@@ -65,7 +64,7 @@ public class MusicListActivity extends AppCompatActivity implements View.OnClick
     private Context mContext;
     private Toolbar toolbar;
     private ImageView returnImg;
-    private TextView topMusicDisplay;
+    private TextView listTitle;
     private CoordinatorLayout coordinator;
     private TextView musicNameTx;
     private TextView commentCount;
@@ -138,7 +137,6 @@ public class MusicListActivity extends AppCompatActivity implements View.OnClick
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.list_activity);
-        getWindow().setStatusBarColor(getResources().getColor(R.color.colorPrimary));
         Intent intent=getIntent();
         ListsList=intent.getParcelableArrayListExtra("ListsList");
         mContext = this;
@@ -161,7 +159,7 @@ public class MusicListActivity extends AppCompatActivity implements View.OnClick
         nextImg = (ImageView) coordinator.findViewById(R.id.iv_media_next);
         shuffleImg = (ImageView) coordinator.findViewById(R.id.iv_media_shuffle);
         toolbar = (Toolbar) coordinator.findViewById(R.id.toolbar_list_fragment);
-        topMusicDisplay = (TextView) coordinator.findViewById(R.id.tv_music_display);
+        listTitle = (TextView) coordinator.findViewById(R.id.tv_toolbar_title);
         playerBarLayout= (LinearLayout) findViewById(R.id.music_playerBarInApp);
         toolbar.setTitle("");
         toolbar.setSubtitle("");
@@ -176,6 +174,8 @@ public class MusicListActivity extends AppCompatActivity implements View.OnClick
         Bundle bundle = new Bundle();
         Intent intent = getIntent();
         int FROM = intent.getIntExtra(Config.LIST, -1);
+        String name=intent.getStringExtra("name");
+        listTitle.setText(name);
         bundle.putInt(Config.LIST, FROM);
         fragment.setArguments(bundle);
     }
@@ -223,19 +223,10 @@ public class MusicListActivity extends AppCompatActivity implements View.OnClick
                 }
                 break;
             case R.id.iv_media_previous:
-               /* int location = mService.getMyList().indexOf(mService.currentMusic);
-                if (location == 0) {
-                    mService.play(mService.getMyList().get(mService.getMyList().size() - 1));
-                } else
-                    mService.play(mService.getMyList().get(location - 1));*/
+
                 mService.play(mService.getPreviousMusic());
                 break;
             case R.id.iv_media_next:
-                /*int location1 = mService.getMyList().indexOf(mService.currentMusic);
-                if (location1 == mService.getMyList().size() - 1) {
-                    mService.play(mService.getMyList().get(0));
-                } else
-                    mService.play(mService.getMyList().get(location1 + 1));*/
                 mService.play(mService.getNextMusic());
                 break;
             case R.id.iv_media_play: {
@@ -261,24 +252,21 @@ public class MusicListActivity extends AppCompatActivity implements View.OnClick
             case 1: {
                 playImg.setImageResource(R.drawable.play);
                 //Toast.makeText(context, "music is prepared", Toast.LENGTH_SHORT).show();
-                topMusicDisplay.setText(null);
                 break;
             }
             case 2: {
                 playImg.setImageResource(R.drawable.pause);
-                topMusicDisplay.setText(mService.currentMusic.getMusicName());
                 //Toast.makeText(context, "music is playing", Toast.LENGTH_SHORT).show();
                 break;
             }
             case 3: {
                 playImg.setImageResource(R.drawable.play);
-                topMusicDisplay.setText(null);
                 //Toast.makeText(context, "music is paused", Toast.LENGTH_SHORT).show();
                 break;
 
             }
         }
-        if(topMusicDisplay.getText()==null&&PlayerBarToken==true){
+        if(PlayerBarToken==true&&PlayerService.PlayerState!=PlayerService.MediaPlayer_PLAY){
             ObjectAnimator.ofFloat(playerBarLayout,"translationY",0F,180F).setDuration(0).start();
             PlayerBarToken=false;
         }
@@ -286,7 +274,7 @@ public class MusicListActivity extends AppCompatActivity implements View.OnClick
 
     @Override
     public void updateToolbar(String string) {
-        topMusicDisplay.setText(string);
+        //topMusicDisplay.setText(string);
     }
 
     @Override

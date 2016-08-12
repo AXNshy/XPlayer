@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#00bcd4</color>
+    <!--<color name="colorPrimary">#00bcd4</color>-->
+    <color name="colorPrimary">#FF22A4EA</color>
     <color name="colorPrimaryDark">#006064</color>
     <color name="colorAccent">#00e5ff</color>
     <color name="colorCyan100">#B2EBF2</color>
@@ -16,4 +17,5 @@
     <color name="black">#000000</color>
     <color name="colorItemMenuIcon">#27ae60</color>
     <color name="colorCuttingLine">#bdc3c7</color>
+    <color name="colorGreenHost">#FF34AF5F</color>
 </resources>

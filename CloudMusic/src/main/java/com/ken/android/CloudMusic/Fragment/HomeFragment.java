@@ -182,6 +182,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
                             int _id=mListsList.get(position).getListId();
                             Intent intent = new Intent(view.getContext(), MusicListActivity.class);
                             intent.putExtra(Config.LIST,_id);
+                            intent.putExtra("name",mListsList.get(position).getListName());
                             intent.putParcelableArrayListExtra("ListsList", (ArrayList<? extends Parcelable>) mListsList);
                             startActivity(intent);
                         }

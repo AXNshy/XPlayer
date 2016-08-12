@@ -41,9 +41,9 @@ public class PlayerService extends Service implements Config, MediaPlayer.OnPrep
     private MyObservable mObservable;
 
     private static final String TAG = "CloudMusic";
-    private int PlayerState = 1;
-    public int MediaPlayer_PLAY = 2;
-    public int MediaPlayer_PAUSE = 1;
+    public static int PlayerState = 1;
+    public static int MediaPlayer_PLAY = 2;
+    public static int MediaPlayer_PAUSE = 1;
 
 
     public int repeatTag = 0;
@@ -137,30 +137,9 @@ public class PlayerService extends Service implements Config, MediaPlayer.OnPrep
             super();
         }
 
-        /*
-            * initialize PlayerServiceReceiver
-            * */
+
         private void initEvent() {
-            getList(PlayerService.this);
-            /*new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    while (getPlayerState() == MediaPlayer_PLAY) {
-                        Message msg = Message.obtain();
-                        int progress = getPlayerInstance().getCurrentPosition() / 1000;
-                        msg.obj = progress;
-                        Log.w("TAG", "progress-----------" + progress);
-                        handler.sendMessage(handler.obtainMessage(2, msg));
-                        try {
-                            Thread.sleep(1000);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                    }
-
-                }
-            }).start();*/
-
+            //getList(PlayerService.this);
         }
 
         public void getList(final Context context) {
@@ -237,15 +216,11 @@ public class PlayerService extends Service implements Config, MediaPlayer.OnPrep
         }
 
         private MediaPlayer createMediaPlayer() {
-            try {
                 MediaPlayer mediaPlayer = new MediaPlayer();
                 if (repeatTag == 0)
                     mediaPlayer.setLooping(false);
                 if (repeatTag == 1)
                     mediaPlayer.setLooping(true);
-                mediaPlayer.reset();
-                mediaPlayer.setDataSource(currentMusic.data);
-                mediaPlayer.prepare();
                 mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                     @Override
                     public void onCompletion(MediaPlayer mp) {
@@ -276,10 +251,6 @@ public class PlayerService extends Service implements Config, MediaPlayer.OnPrep
                     }
                 });
                 return mediaPlayer;
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return null;
         }
 
         /**

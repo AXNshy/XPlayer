@@ -128,7 +128,7 @@ public class List_Fragment extends Fragment implements AdapterView.OnItemClickLi
             Log.e("TAGS","MediaPlayerService does not existed");
         }
         mService.play(mList.get(position));
-        mListener.updateToolbar(mService.getMyList().get(position).musicName);
+        //mListener.updateToolbar(mService.getMyList().get(position).musicName);
         Intent intent=new Intent(view.getContext(), MusicPlayingActivity.class);
         startActivity(intent);
     }

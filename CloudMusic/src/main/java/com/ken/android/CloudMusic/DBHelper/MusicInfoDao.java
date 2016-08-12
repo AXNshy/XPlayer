@@ -139,7 +139,7 @@ public class MusicInfoDao implements Config {
                 i++;
             }*/
 //            Cursor cursor=sqLiteDatabase.
-            Cursor cursor1 = sqLiteDatabase.rawQuery("select * from " + DatabaseHelper.TABLE_MUSIC + " where musicId=( select musicId from " + DatabaseHelper.TABLE_MUSIC_LIST_RELATIONSHIP
+            Cursor cursor1 = sqLiteDatabase.rawQuery("select * from " + DatabaseHelper.TABLE_MUSIC + " where musicId in ( select musicId from " + DatabaseHelper.TABLE_MUSIC_LIST_RELATIONSHIP
                     + " where listId=" + listId + ") ", null);
 //            Cursor cursor1 = sqLiteDatabase.query(DatabaseHelper.TABLE_MUSIC,null,null,null, null, null, null);
             if (cursor1 != null && cursor1.moveToFirst()) {
