@@ -12,13 +12,16 @@ public class ListsInfo implements Parcelable{
     private String listName;
     private int listCount;
     private String backgroundPath;
+    private int userId;
 
     public ListsInfo() {
     }
 
-    public ListsInfo(String listName, int listCount) {
+    public ListsInfo(String listName, int listCount,String backgroundPath) {
         this.listName = listName;
         this.listCount = listCount;
+        this.backgroundPath=backgroundPath;
+        this.userId=-1;
     }
 
     protected ListsInfo(Parcel in) {
@@ -36,6 +39,7 @@ public class ListsInfo implements Parcelable{
             list.setListName(in.readString());
             list.setListCount(in.readInt());
             list.setBackgroundPath(in.readString());
+            list.setUserId(in.readInt());
             return list;
         }
 
@@ -44,6 +48,14 @@ public class ListsInfo implements Parcelable{
             return new ListsInfo[size];
         }
     };
+
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
+
+    public int getUserId() {
+        return userId;
+    }
 
     public void setListId(int listId) {
         this.listId = listId;
@@ -88,6 +100,7 @@ public class ListsInfo implements Parcelable{
         parcel.writeString(listName);
         parcel.writeInt(listCount);
         parcel.writeString(backgroundPath);
+        parcel.writeInt(userId);
     }
 
 

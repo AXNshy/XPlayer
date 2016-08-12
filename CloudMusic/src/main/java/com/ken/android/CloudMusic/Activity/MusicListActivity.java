@@ -80,9 +80,7 @@ public class MusicListActivity extends AppCompatActivity implements View.OnClick
     private LinearLayout albumLayout;
     private LinearLayout playerBarLayout;
 
-    private BottomSheetBehavior<View> behavior;
     private BottomSheetDialog bottomSheetDialog;
-    View bottomSheet;
 
     WindowManager.LayoutParams params;
     Window window;
@@ -92,6 +90,7 @@ public class MusicListActivity extends AppCompatActivity implements View.OnClick
     private PlayerService mService;
 
     List<ListsInfo> ListsList;
+    int CurrentListId;
 
     // 定义ServiceConnection
     private ServiceConnection conn = new ServiceConnection() {
@@ -139,6 +138,7 @@ public class MusicListActivity extends AppCompatActivity implements View.OnClick
         setContentView(R.layout.list_activity);
         Intent intent=getIntent();
         ListsList=intent.getParcelableArrayListExtra("ListsList");
+        CurrentListId=intent.getIntExtra(Config.LIST,-1);
         mContext = this;
         params = getWindow().getAttributes();
         window = getWindow();
@@ -173,10 +173,10 @@ public class MusicListActivity extends AppCompatActivity implements View.OnClick
                 , fragment).commit();
         Bundle bundle = new Bundle();
         Intent intent = getIntent();
-        int FROM = intent.getIntExtra(Config.LIST, -1);
         String name=intent.getStringExtra("name");
         listTitle.setText(name);
-        bundle.putInt(Config.LIST, FROM);
+        bundle.putParcelable("list",ListsList.get(CurrentListId));
+        bundle.putInt(Config.LIST, CurrentListId);
         fragment.setArguments(bundle);
     }
 

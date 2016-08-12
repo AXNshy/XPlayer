@@ -196,7 +196,6 @@ public class MusicInfoDao implements Config {
 
     public static void scanMusic(Context context) {
         SQLiteDatabase sqLiteDatabase = DatabaseHelper.getHelper(context).getWritableDatabase();
-        ArrayList<MusicInfo> mList = new ArrayList<>();
         Cursor cursor = MediaStoreAccessHelper.getAllSongUri(context, null);
         if(cursor!=null&&cursor.moveToFirst()) {
            do{

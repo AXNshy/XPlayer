@@ -1,6 +1,8 @@
 package com.ken.android.CloudMusic.Adapter;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -58,7 +60,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<MyViewHolder> {
     @Override
     public void onBindViewHolder(final MyViewHolder holder, final int position) {
         RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) holder.listAvatarLayout.getLayoutParams();
-        Log.w("TAG", "screenWidth--------" + screenWidth + "     screenHeight----------" + screenHeight);
+        Log.w("TAG", "screenWidth--------" + screenWidth + "     screenHeight----------" + screenHeight +"    --avatar path"+mListsList.get(position).getBackgroundPath());
         params.width = (screenWidth - 4 * 8) / 3;
         params.height = (int) (params.width * 1.414);
         holder.listAvatarLayout.setLayoutParams(params);
@@ -66,6 +68,11 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<MyViewHolder> {
 //        holder.listNameTx = (TextView) itemView.findViewById(R.id.tv_musiclist_count);
         holder.listNameTx.setText(mListsList.get(position).getListName());
         holder.listCountTx.setText(mListsList.get(position).getListCount() + "");
+        if(mListsList.get(position).getBackgroundPath()!=null) {
+            holder.listAvatarLayout.setBackground(Drawable.createFromPath(mListsList.get(position).getBackgroundPath()));
+        }
+        else
+            holder.listAvatarLayout.setBackgroundResource(R.drawable.h1);
         if (mOnItemClickListener != null) {
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override

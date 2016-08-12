@@ -10,7 +10,7 @@
     <color name="white">#FFFFFF</color>
     <color name="overflowTextColor">#FFFFFF</color>
     <color name="red">#FF0000</color>
-    <color name="colorListItemPressed">#e0f7fa</color>
+    <color name="colorListItemPressed">#FF22A4EA</color>
     <color name="colorIndego">#c5cae9</color>
     <color name="colorGreenA200">#69f0a1</color>
     <color name="colorDrawerBack">#77d8eb</color>
