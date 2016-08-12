@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialog;
@@ -39,11 +40,13 @@ import com.ken.android.CloudMusic.Dialog.CollectDialog;
 import com.ken.android.CloudMusic.FilesRead.ListsInfo;
 import com.ken.android.CloudMusic.FilesRead.MusicInfo;
 import com.ken.android.CloudMusic.Fragment.List_Fragment;
+import com.ken.android.CloudMusic.Fragment.SystemListFragment;
 import com.ken.android.CloudMusic.PlayerService;
 import com.ken.android.CloudMusic.R;
 import com.ken.android.CloudMusic.Service.Service;
 
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
@@ -52,7 +55,7 @@ import java.util.Observer;
 /**
  * Created by axnshy on 16/5/20.
  */
-public class MusicListActivity extends AppCompatActivity implements View.OnClickListener, List_Fragment.OnItemClickListener, Observer, MyAdapter.OnItemMenuClickListener {
+public class MusicListActivity extends AppCompatActivity implements View.OnClickListener, List_Fragment.OnItemClickListener,SystemListFragment.OnItemClickListener, Observer, MyAdapter.OnItemMenuClickListener {
 
 
     private LinearLayout musicListLayout;
@@ -90,7 +93,7 @@ public class MusicListActivity extends AppCompatActivity implements View.OnClick
     private PlayerService mService;
 
     List<ListsInfo> ListsList;
-    int CurrentListId;
+    int CurrentListPosition;
 
     // 定义ServiceConnection
     private ServiceConnection conn = new ServiceConnection() {
@@ -138,7 +141,7 @@ public class MusicListActivity extends AppCompatActivity implements View.OnClick
         setContentView(R.layout.list_activity);
         Intent intent=getIntent();
         ListsList=intent.getParcelableArrayListExtra("ListsList");
-        CurrentListId=intent.getIntExtra(Config.LIST,-1);
+        CurrentListPosition=intent.getIntExtra(Config.LIST,-1);
         mContext = this;
         params = getWindow().getAttributes();
         window = getWindow();
@@ -167,17 +170,35 @@ public class MusicListActivity extends AppCompatActivity implements View.OnClick
 
         musicListLayout.setVisibility(View.VISIBLE);
         Log.w("TAG", "musicname-----------" + musicNameTx + "comment------------ " + commentCount);
-        List_Fragment fragment = new List_Fragment();
-        FragmentManager fragmentManager = getFragmentManager();
-        fragmentManager.beginTransaction().replace(R.id.FL_list_fragment
-                , fragment).commit();
-        Bundle bundle = new Bundle();
-        Intent intent = getIntent();
-        String name=intent.getStringExtra("name");
-        listTitle.setText(name);
-        bundle.putParcelable("list",ListsList.get(CurrentListId));
-        bundle.putInt(Config.LIST, CurrentListId);
-        fragment.setArguments(bundle);
+        if(CurrentListPosition>-1) {
+            List_Fragment fragment = new List_Fragment();
+
+            FragmentManager fragmentManager = getFragmentManager();
+            fragmentManager.beginTransaction().replace(R.id.FL_list_fragment
+                    , fragment).commit();
+            Bundle bundle = new Bundle();
+            if (CurrentListPosition >= 0) {
+                String name = ListsList.get(CurrentListPosition).getListName();
+                listTitle.setText(name);
+            }
+            bundle.putParcelableArrayList("ListsList", (ArrayList<? extends Parcelable>) ListsList);
+            bundle.putInt(Config.LIST, CurrentListPosition);
+            fragment.setArguments(bundle);
+        }
+        else {
+            SystemListFragment fragment = new SystemListFragment();
+
+            FragmentManager fragmentManager = getFragmentManager();
+            fragmentManager.beginTransaction().replace(R.id.FL_list_fragment
+                    , fragment).commit();
+            Bundle bundle = new Bundle();
+            if (CurrentListPosition >= 0) {
+                String name = ListsList.get(CurrentListPosition).getListName();
+                listTitle.setText(name);
+            }
+            bundle.putParcelableArrayList("ListsList", (ArrayList<? extends Parcelable>) ListsList);
+            fragment.setArguments(bundle);
+        }
     }
 
     private void initEvent() {

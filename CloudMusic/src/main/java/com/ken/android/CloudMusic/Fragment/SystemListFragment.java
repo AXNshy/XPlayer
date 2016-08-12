@@ -6,16 +6,12 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
-import android.os.RemoteException;
 import android.support.annotation.Nullable;
-import android.support.v4.media.session.MediaControllerCompat;
-import android.support.v4.media.session.MediaSessionCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,8 +23,8 @@ import android.widget.TextView;
 
 import com.ken.android.CloudMusic.Activity.MusicListActivity;
 import com.ken.android.CloudMusic.Activity.MusicPlayingActivity;
-import com.ken.android.CloudMusic.Config;
 import com.ken.android.CloudMusic.Adapter.MyAdapter;
+import com.ken.android.CloudMusic.Config;
 import com.ken.android.CloudMusic.DBHelper.MusicInfoDao;
 import com.ken.android.CloudMusic.FilesRead.ListsInfo;
 import com.ken.android.CloudMusic.FilesRead.MusicInfo;
@@ -37,16 +33,16 @@ import com.ken.android.CloudMusic.R;
 import com.ken.android.CloudMusic.Service.Service;
 
 import org.xutils.view.annotation.ContentView;
-import org.xutils.view.annotation.ViewInject;
+import org.xutils.x;
 
 import java.util.ArrayList;
 import java.util.List;
 
-
 /**
- * Created by axnshy on 16/5/21.
+ * Created by axnshy on 16/8/12.
  */
-public class List_Fragment extends BaseFragment implements AdapterView.OnItemClickListener {
+@ContentView(R.layout.custom_list_fragment)
+public class SystemListFragment extends Fragment implements AdapterView.OnItemClickListener {
     private MusicListActivity activity;
     private View view;
     private ArrayList<MusicInfo> mList;
@@ -54,13 +50,24 @@ public class List_Fragment extends BaseFragment implements AdapterView.OnItemCli
     private ListView mListView;
     private PlayerService mService;
     private List<ListsInfo> ListsList;
-    private int listPositon;
+    private int listId;
     OnItemClickListener mListener;
-    TextView listCountTx;
-    TextView listNameTx;
-    TextView listCreatorTx;
-    ImageView listAvatarImg;
-    ImageView listCreatorAvatarImg;
+
+    Handler handler=new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what){
+                case 0:
+                    mList = (ArrayList<MusicInfo>) msg.obj;
+                    mAdapter = new MyAdapter(view.getContext(), activity, mList);
+                    System.out.println("mAdapter" + mAdapter);
+                    mListView.setAdapter(mAdapter);
+                    break;
+            }
+        }
+    };
+
 
     // 定义ServiceConnection
     private ServiceConnection conn = new ServiceConnection() {
@@ -84,28 +91,33 @@ public class List_Fragment extends BaseFragment implements AdapterView.OnItemCli
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.list_fragment, container, false);
+        view = inflater.inflate(R.layout.custom_list_fragment, container, false);
         super.onCreateView( inflater,  container,  savedInstanceState);
         Bundle bundle = getArguments();
-        listPositon = bundle.getInt(Config.LIST);
         ListsList = bundle.getParcelableArrayList("ListsList");
+        initView();
+        initList();
         return view;
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        initView();
-        initList();
+
     }
 
     private void initList() {
         // mList=new ArrayList<>();
         Log.e("TAG", "Service   --------------------------    " + mService);
-        mList = MusicInfoDao.getMusicList(view.getContext(), ListsList.get(listPositon).getListId());
-        mAdapter = new MyAdapter(view.getContext(), activity, mList);
-        System.out.println("mAdapter" + mAdapter);
-        mListView.setAdapter(mAdapter);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Message msg=Message.obtain();
+                msg.what=0;
+                msg.obj= MusicInfoDao.getAllMusic(view.getContext());
+                handler.sendMessage(msg);
+            }
+        }).start();
     }
 
     @Override
@@ -127,23 +139,10 @@ public class List_Fragment extends BaseFragment implements AdapterView.OnItemCli
     }
 
     private void initView() {
-        listCountTx= (TextView) view.findViewById(R.id.tv_list_count);
-        listCreatorTx= (TextView) view.findViewById(R.id.tv_list_creator_name);
-        listNameTx= (TextView) view.findViewById(R.id.tv_list_name);
-        listAvatarImg= (ImageView) view.findViewById(R.id.iv_list_avator);
-        listCreatorAvatarImg= (ImageView) view.findViewById(R.id.iv_list_creator_avatar);
+
         mListView = (ListView) view.findViewById(R.id.lv_fragment_musicList);
         mListView.setOnItemClickListener(this);
-        if(ListsList.get(listPositon).getBackgroundPath()!=null) {
-            listAvatarImg.setImageDrawable(Drawable.createFromPath(ListsList.get(listPositon).getBackgroundPath()));
-        }
-        else
-        {
-            listAvatarImg.setImageResource(R.drawable.h1);
-        }
-        listCountTx.setText(ListsList.get(listPositon).getListCount()+"");
-        listNameTx.setText(ListsList.get(listPositon).getListName());
-        listCreatorTx.setText(ListsList.get(listPositon).getUserId()+"");
+
     }
 
     @Override
@@ -154,6 +153,7 @@ public class List_Fragment extends BaseFragment implements AdapterView.OnItemCli
             view.getContext().startService(serviceintent);
             Log.e("TAGS", "MediaPlayerService does not existed");
         }
+        mService.setPlayerList(mList);
         mService.play(mList.get(position));
         //mListener.updateToolbar(mService.getMyList().get(position).musicName);
         Intent intent = new Intent(view.getContext(), MusicPlayingActivity.class);

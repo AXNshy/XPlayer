@@ -200,12 +200,10 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
                             public void onItemClick(View view, int position) {
                                 int _id = mListsList.get(position).getListId();
                                 Intent intent = new Intent(view.getContext(), MusicListActivity.class);
-                                intent.putExtra(Config.LIST, _id);
-                                intent.putExtra("name", mListsList.get(position).getListName());
+                                intent.putExtra(Config.LIST, position);
                                 intent.putParcelableArrayListExtra("ListsList", (ArrayList<? extends Parcelable>) mListsList);
                                 startActivity(intent);
                             }
-
                             @Override
                             public void onItemLongClick(View view, int position) {
 

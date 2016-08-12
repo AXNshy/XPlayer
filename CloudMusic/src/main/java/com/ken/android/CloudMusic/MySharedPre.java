@@ -16,32 +16,35 @@ public class MySharedPre {
     private static SharedPreferences sharedPreferences;
     private static SharedPreferences.Editor editor;
     //0:blue   1:red
-    public static int APPTheme=0;
+    public static int APPTheme = 0;
 
-    public static int APPTheme_BLUE=0;
+    public static int APPTheme_BLUE = 0;
 
-    public static String BLUE="#4374f5";
-    public static String RED="#FA6E86";
+    public static String BLUE = "#4374f5";
+    public static String RED = "#FA6E86";
 
-    public static int APPTheme_RED=1;
+    public static int APPTheme_RED = 1;
 
 
-    public static final String APP_COLOR="app_color";
+    public static final String APP_COLOR = "app_color";
+
+
+    public static final String FIRST = "first_enter";
 
     public static SharedPreferences getSharedPreferences(Context context) {
-        sharedPreferences=context.getSharedPreferences(Config.USER_PREFER,Context.MODE_PRIVATE);
-        editor=sharedPreferences.edit();
+        sharedPreferences = context.getSharedPreferences(Config.USER_PREFER, Context.MODE_PRIVATE);
+        editor = sharedPreferences.edit();
         return sharedPreferences;
     }
-    public static void setAppTheme(Context context,String color){
+
+    public static void setAppTheme(Context context, String color) {
         getSharedPreferences(context);
-        editor.putString(APP_COLOR,color);
+        editor.putString(APP_COLOR, color);
         editor.commit();
-        if(APPTheme==APPTheme_BLUE){
-            APPTheme=APPTheme_RED;
-        }
-        else {
-            APPTheme=APPTheme_BLUE;
+        if (APPTheme == APPTheme_BLUE) {
+            APPTheme = APPTheme_RED;
+        } else {
+            APPTheme = APPTheme_BLUE;
         }
     }
 
@@ -58,39 +61,53 @@ public class MySharedPre {
         return color;
     }
 
-    public static User getCurrentUser(Context context){
+    public static User getCurrentUser(Context context) {
         getSharedPreferences(context);
-        String username=sharedPreferences.getString(USERNAME,null);
-        String password=sharedPreferences.getString(PASSWORD,null);
-        if(username!=null&&password!=null){
-            User user=new User(username,password);
-            User.mUser=user;
+        String username = sharedPreferences.getString(USERNAME, null);
+        String password = sharedPreferences.getString(PASSWORD, null);
+        if (username != null && password != null) {
+            User user = new User(username, password);
+            User.mUser = user;
             return user;
         }
         return null;
     }
 
-    public static void updateCurrentUser(Context context,String username,String password){
+    public static void updateCurrentUser(Context context, String username, String password) {
         getSharedPreferences(context);
-        SharedPreferences.Editor editor=sharedPreferences.edit();
-        editor.putString(USERNAME,username);
-        editor.putString(PASSWORD,password);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(USERNAME, username);
+        editor.putString(PASSWORD, password);
         editor.commit();
     }
 
-    public static void unRegisterUser(Context context){
+    public static void unRegisterUser(Context context) {
         getSharedPreferences(context);
-        SharedPreferences.Editor editor =sharedPreferences.edit();
+        SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.remove(USERNAME);
         editor.remove(PASSWORD);
         editor.commit();
     }
 
-    public static void setRepeatAndShuffleTag(Context context,int repeatTag,int shuffleTag){
+    public static void setRepeatAndShuffleTag(Context context, int repeatTag, int shuffleTag) {
         getSharedPreferences(context);
-        SharedPreferences.Editor editor=sharedPreferences.edit();
-        editor.putInt(REPEATTAG,repeatTag);
-        editor.putInt(SHUFFLETAG,shuffleTag);
+//        SharedPreferences.Editor editor=sharedPreferences.edit();
+        editor.putInt(REPEATTAG, repeatTag);
+        editor.putInt(SHUFFLETAG, shuffleTag);
         editor.commit();
     }
+
+    public static void setOpenFLAG(Context context) {
+        getSharedPreferences(context);
+//        SharedPreferences
+        editor.putInt(FIRST, 1);
+        editor.commit();
+    }
+
+    public static int getOpenFlag(Context context){
+        getSharedPreferences(context);
+       return sharedPreferences.getInt(FIRST,0);
+
+    }
+
 }

@@ -16,7 +16,7 @@ public class BaseFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        x.view().inject(BaseFragment.this,inflater,container);
+        x.view().inject(this,inflater,container);
         return super.onCreateView(inflater, container, savedInstanceState);
     }
 }
