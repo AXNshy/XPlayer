@@ -10,16 +10,12 @@ import android.provider.MediaStore;
 public class MediaStoreAccessHelper {
 
 
-	public static Cursor getAllSongsWithSelection(Context context, 
-												  String selection, 
-												  String[] projection, 
-												  String sortOrder) {
-		
+	public static Cursor getAlbumInfomation(Context context,int album_id){
+		String strAlbums = "content://media/external/album_art";
 		ContentResolver contentResolver = context.getContentResolver();
-		Uri uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
-		
-		return contentResolver.query(uri, projection, selection, null, sortOrder);
-		
+		Uri uri = Uri.parse(strAlbums);
+		String selection = MediaStore.Audio.AlbumColumns.ALBUM_ID+ "="+album_id;
+		return contentResolver.query(uri,null,selection,null,null);
 	}
 	
 	/**

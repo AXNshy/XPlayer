@@ -115,11 +115,11 @@ public class Launch extends BaseActivity implements Toolbar.OnMenuItemClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (!User.isUserExit(this)) {
+       /* if (!User.isUserExit(this)) {
             Intent intent = new Intent(Launch.this, LoginActivity.class);
             startActivity(intent);
-        }
-        setContentView(R.layout.activity_launch);
+        }*/
+//        setContentView(R.layout.activity_launch);
         initView();
         initEvent();
         launchService();

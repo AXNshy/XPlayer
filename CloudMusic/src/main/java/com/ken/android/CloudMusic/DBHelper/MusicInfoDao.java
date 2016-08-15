@@ -111,6 +111,7 @@ public class MusicInfoDao implements Config {
                 musicInfo.data = cursor.getString(cursor.getColumnIndexOrThrow("data"));
                 musicInfo.artist = cursor.getString(cursor.getColumnIndexOrThrow("artist"));
                 musicInfo.album = cursor.getString(cursor.getColumnIndexOrThrow("album"));
+                musicInfo.albumUri=cursor.getString(cursor.getColumnIndexOrThrow("albumUri"));
                 musicInfo.musicName = cursor.getString(cursor.getColumnIndexOrThrow("musicName"));
                 musicInfo.duration = cursor.getInt(cursor.getColumnIndexOrThrow("duration"));
                 musicInfo.size = cursor.getInt(cursor.getColumnIndexOrThrow("size"));
@@ -148,6 +149,7 @@ public class MusicInfoDao implements Config {
                     music.musicId = cursor1.getInt(cursor1.getColumnIndexOrThrow("musicId"));
                     music.musicName = cursor1.getString(cursor1.getColumnIndexOrThrow("musicName"));
                     music.album = cursor1.getString(cursor1.getColumnIndexOrThrow("album"));
+                    music.albumUri=cursor1.getString(cursor1.getColumnIndexOrThrow("albumUri"));
                     music.artist = cursor1.getString(cursor1.getColumnIndexOrThrow("artist"));
                     music.publish = cursor1.getString(cursor1.getColumnIndexOrThrow("year"));
                     music.duration = cursor1.getInt(cursor1.getColumnIndexOrThrow("duration"));
@@ -172,10 +174,9 @@ public class MusicInfoDao implements Config {
     /**
      * 功能 通过album_id查找 album_art 如果找不到返回null
      *
-     * @param album_id
      * @return album_art
      */
-
+/*
     public static String getAlbumArt(Context context, int album_id) {
         String mUriAlbums = "content://media/external/audio/albums";
         String[] projection = new String[]{"album_art"};
@@ -192,7 +193,7 @@ public class MusicInfoDao implements Config {
             return null;
         }
         return album_art;
-    }
+    }*/
 
     public static void scanMusic(Context context) {
         SQLiteDatabase sqLiteDatabase = DatabaseHelper.getHelper(context).getWritableDatabase();
@@ -207,10 +208,35 @@ public class MusicInfoDao implements Config {
                 values.put("duration", cursor.getInt(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DURATION)));
                 values.put("size", cursor.getInt(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.SIZE)));
                 values.put("year", cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.YEAR)));
+               int albumId=cursor.getInt(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.ALBUM_ID));
+               values.put("albumUri",getAlbumArt(context,albumId));
+               Log.e("TAG","ALBUM INFORMATION   Music  "+cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.TITLE))+"ALBUM ART   "+getAlbumArt(context,albumId));
                 sqLiteDatabase.insert(DatabaseHelper.TABLE_MUSIC, null, values);
             } while (cursor.moveToNext());
         }
         cursor.close();
         sqLiteDatabase.close();
+    }
+
+    /**
+     *
+     * @param context
+     * @param albumid
+     * @return
+     */
+    private static String getAlbumArt(Context context,int albumid) {
+        String strAlbums = "content://media/external/audio/albums";
+        String[] projection = new String[] {android.provider.MediaStore.Audio.AlbumColumns.ALBUM_ART };
+        Cursor cur = context.getContentResolver().query(
+                Uri.parse(strAlbums + "/" + Integer.toString(albumid)),
+                projection, null, null, null);
+        String strPath = null;
+        if (cur.getCount() > 0 && cur.getColumnCount() > 0) {
+            cur.moveToNext();
+            strPath = cur.getString(0);
+        }
+        cur.close();
+        cur = null;
+        return strPath;
     }
 }

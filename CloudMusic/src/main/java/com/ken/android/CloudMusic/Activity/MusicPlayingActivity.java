@@ -199,8 +199,6 @@ public class MusicPlayingActivity extends BaseActivity implements Observer {
     }
 
 
-    private FragmentPagerAdapter pagerAdapter;
-    private List<AlbumDetailFragment> fragmentArrayList;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -213,7 +211,6 @@ public class MusicPlayingActivity extends BaseActivity implements Observer {
     }
 
     private void initView() {
-        fragmentArrayList = new ArrayList<>();
 
 
     }
@@ -246,22 +243,10 @@ public class MusicPlayingActivity extends BaseActivity implements Observer {
 
         }
         CurrentMusicNameTx.setText(mService.currentMusic.getMusicName());
-        CurrentArtWorkTx.setText(mService.currentMusic.album);
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                String albumArt = MusicInfoDao.getAlbumArt(MusicPlayingActivity.this, mService.currentMusic.albumId);
-                Log.e("TAG","albumArt-----------------------"+albumArt);
-                Message msg = Message.obtain();
-                msg.obj = albumArt;
-                Log.w("TAG","AlbumArtWork-----------"+albumArt);
-                msg.what=1;
-                handler.sendMessage(msg);
-            }
-        }).start();
-        playStatusTotal.setText(mService.currentMusic.getMusicTimeTotal());
         playStatusBar.setMax((int) (mService.currentMusic.duration/1000));
         Log.w("TAG","TotalProgress-----------"+mService.currentMusic.duration/1000);
+        
+        artWorkImg.setImageBitmap(BitmapFactory.decodeFile(mService.currentMusic.getAlbumUri()));
        new Thread(new Runnable() {
            @Override
            public void run() {

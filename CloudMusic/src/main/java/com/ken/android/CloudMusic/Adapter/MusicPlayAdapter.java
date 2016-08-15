@@ -77,16 +77,6 @@ public class MusicPlayAdapter extends BaseAdapter{
                 holder.musicCover.setImageDrawable(bmpDraw);
             }
         };
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                Bitmap bitmap=null;
-                String albumArt= MusicInfoDao.getAlbumArt(context,music.albumId);
-                Message msg = Message.obtain();
-                msg.obj = albumArt;
-                handler.sendMessage(msg);
-            }
-        }).start();
         holder.musicCover.setBackgroundResource(R.drawable.h1);
         holder.musicTitle.setText(music.getMusicName());
         if (music.getMusicArtist().length() > 20) {

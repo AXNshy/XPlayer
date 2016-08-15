@@ -160,7 +160,6 @@ public class List_Fragment extends BaseFragment implements AdapterView.OnItemCli
         startActivity(intent);
     }
 
-
     /*
     * 接口回调,在父Activity中实现该方法,在fragment中想要回调的地方调用mLister的方法
     * */

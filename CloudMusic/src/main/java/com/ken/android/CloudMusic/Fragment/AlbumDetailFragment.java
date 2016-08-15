@@ -97,17 +97,6 @@ MusicInfo mMusicInfo;
     public void update(Observable observable, Object o) {
         musicTitle.setText(mService.currentMusic.getMusicName());
         musicArtist.setText(mService.currentMusic.getMusicArtist());
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                Bitmap bitmap = null;
-                String albumArt = MusicInfoDao.getAlbumArt(view.getContext(), mMusicInfo.albumId);
-                Log.e("TAG","albumArt-----------------------"+albumArt);
-                Message msg = Message.obtain();
-                msg.obj = albumArt;
-                handler.sendMessage(msg);
-            }
-        }).start();
     }
 
     private Handler handler = new Handler() {

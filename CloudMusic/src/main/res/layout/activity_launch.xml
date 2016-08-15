@@ -32,14 +32,6 @@
 
     </RelativeLayout>
     <!--drawer-->
-    <android.support.design.widget.NavigationView
-        android:id="@+id/design_navigation_view"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_gravity="start"
-        android:background="@color/colorDrawerBack"
-        android:fitsSystemWindows="true"
-        app:headerLayout="@layout/navi_drawer_head"
-        app:menu="@menu/drawer" />
+    <include layout="@layout/home_drawer" />
 
 </android.support.v4.widget.DrawerLayout>

@@ -29,7 +29,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return mDb;
     }
 
-    public static DatabaseHelper getHelper(Context context) {
+    public synchronized static DatabaseHelper getHelper(Context context) {
         if (mHelper == null) {
             mHelper = new DatabaseHelper(context);
         }
@@ -53,7 +53,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("create table "
                 + TABLE_MUSIC
                 + " (musicId INTEGER PRIMARY KEY AUTOINCREMENT,"
-                + "musicName varchar(40),data varchar(100),album varchar(40),artist varchar(40)," +
+                + "musicName varchar(40),data varchar(100),album varchar(40),albumUri varchar(100),artist varchar(40)," +
                 "size integer,duration integer,category integer,year varchar(10),filetype integer)");
         db.execSQL("create table "
                 + TABLE_LISTS

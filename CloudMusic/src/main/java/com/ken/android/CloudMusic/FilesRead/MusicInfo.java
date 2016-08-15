@@ -15,7 +15,7 @@ public class MusicInfo implements Parcelable {
     public static final String KEY_ID = "musicId";
 
     public static final String KEY_ALBUM = "album";
-    public static final String KEY_ALBUM_ID = "albumId";
+    public static final String KEY_ALBUM_URI = "albumUri";
 
     public static final String KEY_YEAR = "publishDate";
     public static final String KEY_DURATION = "duration";
@@ -32,7 +32,7 @@ public class MusicInfo implements Parcelable {
      */
     public int musicId = -1;
     public String album;
-    public int albumId;
+    public String albumUri;
     public int duration;
     public String musicName;
     public String artist;
@@ -59,7 +59,7 @@ public class MusicInfo implements Parcelable {
         Bundle bundle = new Bundle();
         bundle.putInt(KEY_ID, musicId);
         bundle.putString(KEY_ALBUM, album);
-        bundle.putInt(KEY_ALBUM_ID, albumId);
+        bundle.putString(KEY_ALBUM_URI, albumUri);
         bundle.putInt(KEY_DURATION, duration);
         bundle.putString(KEY_MUSIC_NAME, musicName);
         bundle.putString(KEY_ARTIST, artist);
@@ -85,7 +85,7 @@ public class MusicInfo implements Parcelable {
             music.publish = bundle.getString(KEY_YEAR);
             music.size = bundle.getInt(KEY_SIZE);
             music.album = bundle.getString(KEY_ALBUM);
-            music.albumId = bundle.getInt(KEY_ALBUM_ID);
+            music.albumUri = bundle.getString(KEY_ALBUM_URI);
             music.filetype = bundle.getInt(KEY_FILETYPE);
             music.category = bundle.getInt(KEY_CATEGORY);
             return music;
@@ -129,4 +129,11 @@ public class MusicInfo implements Parcelable {
         return head + ":" + foot;
     }
 
+    public String getAlbumUri() {
+        return albumUri;
+    }
+
+    public void setAlbumUri(String albumUri) {
+        this.albumUri = albumUri;
+    }
 }

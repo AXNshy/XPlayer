@@ -18,7 +18,6 @@ import android.widget.TextView;
 import com.ken.android.CloudMusic.Activity.LoginActivity;
 import com.ken.android.CloudMusic.Activity.User_InfoShowActivity;
 import com.ken.android.CloudMusic.MySharedPre;
-import com.ken.android.CloudMusic.Adapter.DrawerListAdapter;
 import com.ken.android.CloudMusic.R;
 import com.ken.android.CloudMusic.User;
 
@@ -41,11 +40,7 @@ public class Drawer_Fragment extends Fragment implements AdapterView.OnItemClick
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         mView= inflater.inflate(R.layout.home_drawer,container,false);
-
         initDrawer();
-
-        initList();
-
         setView();
         return mView;
     }
@@ -58,17 +53,6 @@ public class Drawer_Fragment extends Fragment implements AdapterView.OnItemClick
             view_username.setText("当前无用户登录");
             mDrawerImg.setImageResource(R.drawable.music);
         }
-    }
-
-    private void initList() {
-        mDrawerList=new ArrayList<>();
-        mDrawerList.add(0,"我的资料");
-        mDrawerList.add(1,"注销帐号");
-        mDrawerList.add(2,"出退");
-        mDrawerListAdapter=new DrawerListAdapter(mView.getContext(),mDrawerList);
-        //System.out.println(mDrawerListView);
-        mDrawerListView.setAdapter(mDrawerListAdapter);
-        mDrawerListView.setOnItemClickListener(this);
     }
 
     public void setView(){
