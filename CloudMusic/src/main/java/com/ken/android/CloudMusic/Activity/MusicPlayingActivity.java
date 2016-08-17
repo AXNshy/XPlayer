@@ -12,22 +12,14 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-import com.ken.android.CloudMusic.DBHelper.MusicInfoDao;
 import com.ken.android.CloudMusic.FilesRead.MusicInfo;
-import com.ken.android.CloudMusic.Fragment.AlbumDetailFragment;
 import com.ken.android.CloudMusic.PlayerService;
 import com.ken.android.CloudMusic.R;
 import com.ken.android.CloudMusic.Service.Service;
@@ -36,12 +28,8 @@ import org.xutils.view.annotation.ContentView;
 import org.xutils.view.annotation.Event;
 import org.xutils.view.annotation.ViewInject;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
-import java.util.Timer;
-import java.util.TimerTask;
 
 /**
  * Created by axnshy on 16/7/29.
@@ -49,11 +37,13 @@ import java.util.TimerTask;
 @ContentView(R.layout.music_play)
 public class MusicPlayingActivity extends BaseActivity implements Observer {
 
-    @ViewInject(R.id.tb_musicplaying_top)
+    @ViewInject(R.id.toolbar_top)
     private Toolbar toolbar;
     @ViewInject(R.id.iv_back)
     private ImageView returnImg;
-    @ViewInject(R.id.tv_viewTitle)
+    @ViewInject(R.id.iv_toolbar_right)
+    private ImageView shareImg;
+    @ViewInject(R.id.tv_toolbar_title)
     private TextView toolbar_title;
     @ViewInject(R.id.progressbar_player_status)
     private SeekBar playStatusBar;
@@ -79,16 +69,17 @@ public class MusicPlayingActivity extends BaseActivity implements Observer {
     private TextView CurrentArtWorkTx;
 
     private Context context;
-    private Handler handler=new Handler(){
+    private Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             switch (msg.what) {
                 case 0:
-                playStatusBar.setProgress((int) msg.obj);
+                    playStatusBar.setProgress((int) msg.obj);
                     playStatusCurrent.setText(MusicInfo.parseMusicData(mService.getPlayerInstance().getCurrentPosition()));
                     break;
-                case 1:  Bitmap bm = BitmapFactory.decodeFile((String) msg.obj);
+                case 1:
+                    Bitmap bm = BitmapFactory.decodeFile((String) msg.obj);
                     BitmapDrawable bmpDraw = new BitmapDrawable(bm);
                     artWorkImg.setImageDrawable(bmpDraw);
                     break;
@@ -96,7 +87,7 @@ public class MusicPlayingActivity extends BaseActivity implements Observer {
         }
     };
 
-    @Event(value = {R.id.iv_back, R.id.iv_toolbar_music_share, R.id.iv_repeat_play, R.id.iv_previous_play, R.id.iv_play, R.id.iv_next_play, R.id.iv_shuffle_play})
+    @Event(value = {R.id.iv_back, R.id.iv_toolbar_right, R.id.iv_repeat_play, R.id.iv_previous_play, R.id.iv_play, R.id.iv_next_play, R.id.iv_shuffle_play})
     private void OnClicked(View view) {
         //判断Service是否存在
 
@@ -199,20 +190,20 @@ public class MusicPlayingActivity extends BaseActivity implements Observer {
     }
 
 
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        setContentView(R.layout.music_play);
-        context=this;
-        getWindow().setStatusBarColor(getResources().getColor(R.color.colorIndego));
+        context = this;
         initView();
 
     }
 
     private void initView() {
-
-
+        toolbar.setTitle("");
+        toolbar.setSubtitle("");
+        setSupportActionBar(toolbar);
+        shareImg.setImageResource(R.drawable.ic_share_white_48dp);
+        returnImg.setImageResource(R.drawable.ic_chevron_left_white_48dp);
     }
 
     @Override
@@ -226,90 +217,39 @@ public class MusicPlayingActivity extends BaseActivity implements Observer {
         switch (mService.getPlayerState()) {
             case 1: {
                 musicPlayImg.setImageResource(R.drawable.play);
-                //Toast.makeText(context, "music is prepared", Toast.LENGTH_SHORT).show();
                 break;
             }
             case 2: {
                 musicPlayImg.setImageResource(R.drawable.pause);
-                //Toast.makeText(context, "music is playing", Toast.LENGTH_SHORT).show();
                 break;
             }
             case 3: {
                 musicPlayImg.setImageResource(R.drawable.play);
-                //Toast.makeText(context, "music is paused", Toast.LENGTH_SHORT).show();
                 break;
-
             }
-
         }
         CurrentMusicNameTx.setText(mService.currentMusic.getMusicName());
-        playStatusBar.setMax((int) (mService.currentMusic.duration/1000));
-        Log.w("TAG","TotalProgress-----------"+mService.currentMusic.duration/1000);
-        
-        artWorkImg.setImageBitmap(BitmapFactory.decodeFile(mService.currentMusic.getAlbumUri()));
-       new Thread(new Runnable() {
-           @Override
-           public void run() {
-               while(mService.getPlayerState()==mService.MediaPlayer_PLAY){
-                   Message msg=Message.obtain();
-                   int progress=mService.getPlayerInstance().getCurrentPosition()/1000;
-                   msg.obj=progress;
-                   Log.w("TAG","progress-----------"+progress);
-                   msg.what=0;
-                   handler.sendMessage(msg);
-                   try {
-                       Thread.sleep(1000);
-                   } catch (InterruptedException e) {
-                       e.printStackTrace();
-                   }
-               }
-
-           }
-       }).start();
-/*
-        MusicInfo currentMusic = mService.currentMusic;
-        int position = mService.getMyList().indexOf(currentMusic);
-        MusicInfo previous = new MusicInfo(), next = new MusicInfo();
-        if (position == mService.getMyList().size() - 1) {
-            previous = mService.getMyList().get(position - 1);
-            next = mService.getMyList().get(0);
-        }
-        if (position == 0) {
-            previous = mService.getMyList().get(mService.getMyList().size() - 1);
-            next = mService.getMyList().get(1);
-        }
-        if (position != 0 && position != mService.getMyList().size() - 1) {
-            previous = mService.getMyList().get(mService.getMyList().size() - 1);
-            next = mService.getMyList().get(position + 1);
-        }
-
-        AlbumDetailFragment currentFragment = new AlbumDetailFragment();
-        AlbumDetailFragment previousFragment = new AlbumDetailFragment();
-        AlbumDetailFragment nextFragment = new AlbumDetailFragment();
-        Bundle curBundle = new Bundle();
-        curBundle.putParcelable("MusicInfo", currentMusic);
-        Bundle prevBundle = new Bundle();
-        prevBundle.putParcelable("MusicInfo", previous);
-        Bundle nextBundle = new Bundle();
-        nextBundle.putParcelable("MusicInfo", next);
-        currentFragment.setArguments(curBundle);
-        previousFragment.setArguments(prevBundle);
-        nextFragment.setArguments(nextBundle);
-        fragmentArrayList.add(0, previousFragment);
-        fragmentArrayList.add(1, currentFragment);
-        fragmentArrayList.add(2, nextFragment);
-        FragmentManager manager = getSupportFragmentManager();
-        pagerAdapter = new FragmentPagerAdapter(manager) {
+        playStatusBar.setMax((int) (mService.currentMusic.duration / 1000));
+        Log.w("TAG", "TotalProgress-----------" + mService.currentMusic.duration / 1000);
+        playStatusTotal.setText(MusicInfo.parseMusicData(mService.currentMusic.duration));
+        new Thread(new Runnable() {
             @Override
-            public Fragment getItem(int position) {
-                return fragmentArrayList.get(position);
-            }
+            public void run() {
+                while (mService.getPlayerState() == mService.MediaPlayer_PLAY) {
+                    Message msg = Message.obtain();
+                    int progress = mService.getPlayerInstance().getCurrentPosition() / 1000;
+                    msg.obj = progress;
+                    Log.w("TAG", "progress-----------" + progress);
+                    msg.what = 0;
+                    handler.sendMessage(msg);
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
 
-            @Override
-            public int getCount() {
-                return fragmentArrayList.size();
             }
-        };
-        viewPager.setAdapter(pagerAdapter);*/
+        }).start();
     }
 }

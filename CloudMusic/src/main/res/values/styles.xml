@@ -40,7 +40,6 @@
     </style>
 
     <style name="dialog" parent="AlertDialog.AppCompat">
-
 </style>
 </resources>
 

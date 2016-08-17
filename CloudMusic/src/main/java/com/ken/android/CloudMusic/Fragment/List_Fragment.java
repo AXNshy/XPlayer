@@ -154,6 +154,7 @@ public class List_Fragment extends BaseFragment implements AdapterView.OnItemCli
             view.getContext().startService(serviceintent);
             Log.e("TAGS", "MediaPlayerService does not existed");
         }
+        mService.setPlayerList(mList);
         mService.play(mList.get(position));
         //mListener.updateToolbar(mService.getMyList().get(position).musicName);
         Intent intent = new Intent(view.getContext(), MusicPlayingActivity.class);

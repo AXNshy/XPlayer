@@ -35,24 +35,24 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private String password;
     private Context context;
 
-    private Handler handler=new Handler(){
+    private Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            int loginState= msg.arg1;
-            System.out.println("msg.arg1     :     "+msg.arg1);
+            int loginState = msg.arg1;
+            System.out.println("msg.arg1     :     " + msg.arg1);
             //登录成功
-            if(loginState==1){
-                User.mUser= (User) msg.obj;
-                Intent intent=new Intent(LoginActivity.this,Launch.class);
-                Toast.makeText(LoginActivity.this,"登录成功!",Toast.LENGTH_SHORT).show();
-                MySharedPre.updateCurrentUser(context,User.mUser.getUsername(),User.mUser.getPassword());
+            if (loginState == 1) {
+                User.setmUser((User) msg.obj);
+                Intent intent = new Intent(LoginActivity.this, Launch.class);
+                Toast.makeText(LoginActivity.this, "登录成功!", Toast.LENGTH_SHORT).show();
+                MySharedPre.updateCurrentUser(context, User.getmUser().getUsername(), User.getmUser().getPassword());
                 startActivity(intent);
                 finish();
             }
             //登录失败
-             if(loginState==0){
-                Toast.makeText(LoginActivity.this,"登录失败,用户名或密码错误",Toast.LENGTH_SHORT).show();
+            if (loginState == 0) {
+                Toast.makeText(LoginActivity.this, "登录失败,用户名或密码错误", Toast.LENGTH_SHORT).show();
                 et_password.setText("");
             }
         }
@@ -65,16 +65,16 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         getWindow().setStatusBarColor(getResources().getColor(R.color.colorDrawerBack));
         initView();
         initEvent();
-        context=this;
+        context = this;
     }
 
 
     private void initView() {
 
-        et_username= (EditText) findViewById(R.id.et_input_username);
-        et_password= (EditText) findViewById(R.id.et_input_password);
-        btn_login= (Button) findViewById(R.id.btn_login);
-        registerTx= (TextView) findViewById(R.id.tv_register);
+        et_username = (EditText) findViewById(R.id.et_input_username);
+        et_password = (EditText) findViewById(R.id.et_input_password);
+        btn_login = (Button) findViewById(R.id.btn_login);
+        registerTx = (TextView) findViewById(R.id.tv_register);
     }
 
     private void initEvent() {
@@ -84,16 +84,16 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     @Override
     public void onClick(View v) {
-        int id=v.getId();
-        switch (id){
-            case R.id.btn_login:{
-                username=et_username.getText().toString().trim();
-                password=et_password.getText().toString();
-                login(this,username,password);
+        int id = v.getId();
+        switch (id) {
+            case R.id.btn_login: {
+                username = et_username.getText().toString().trim();
+                password = et_password.getText().toString();
+                login(this, username, password);
                 break;
             }
-            case R.id.tv_register:{
-                Intent intent=new Intent(LoginActivity.this, RegisterActivity.class);
+            case R.id.tv_register: {
+                Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
                 startActivity(intent);
                 break;
             }
@@ -103,20 +103,19 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     private boolean login(Context context, String username, String password) {
         final String url = Config.WEB_SERVER_LOGIN + "username=" + username + "&password=" + password;
-        if(HttpUtils.isServerConnection(context)) {
+        if (HttpUtils.isServerConnection(context)) {
             new Thread(new Runnable() {
                 @Override
                 public void run() {
                     Message msg = Message.obtain();
-                    String result=HttpUtils.doGet(url);
-                    String loginState=JsonUtils.getLoginInfoFromJson(result);
-                    System.out.println("loginState     :     "+loginState);
-                    if(loginState.equals("successful")){
-                        msg.arg1=1;
-                        msg.obj=JsonUtils.parseJsonToUser_Basic(result);
-                    }
-                    else {
-                        msg.arg1=0;
+                    String result = HttpUtils.doGet(url);
+                    String loginState = JsonUtils.getLoginInfoFromJson(result);
+                    System.out.println("loginState     :     " + loginState);
+                    if (loginState.equals("successful")) {
+                        msg.arg1 = 1;
+                        msg.obj = JsonUtils.parseJsonToUser_Basic(result);
+                    } else {
+                        msg.arg1 = 0;
                     }
                     //发送消息给主线程
                     handler.sendMessage(msg);

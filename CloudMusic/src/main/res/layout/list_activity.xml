@@ -3,15 +3,14 @@
     android:id="@+id/layout_coordinator"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true">
-
+    android:fitsSystemWindows="true"
+    >
     <LinearLayout
         android:id="@+id/layout_list_activity"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
         >
-
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar_list_fragment"
             android:layout_width="match_parent"
@@ -24,7 +23,7 @@
                 >
 
                 <ImageView
-                    android:id="@+id/iv_back_list_fragment"
+                    android:id="@+id/iv_back"
                     android:layout_width="32dp"
                     android:layout_height="32dp"
                     android:layout_centerVertical="true"
@@ -37,7 +36,7 @@
                     android:layout_centerVertical="true"
                     android:layout_marginBottom="4dp"
                     android:layout_marginLeft="10dp"
-                    android:layout_toRightOf="@id/iv_back_list_fragment"
+                    android:layout_toRightOf="@id/iv_back"
                     android:gravity="center_vertical"
                     android:textColor="@color/white"
                     android:textSize="16dp" />

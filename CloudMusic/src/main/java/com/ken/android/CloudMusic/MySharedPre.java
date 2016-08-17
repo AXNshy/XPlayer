@@ -66,16 +66,14 @@ public class MySharedPre {
         String username = sharedPreferences.getString(USERNAME, null);
         String password = sharedPreferences.getString(PASSWORD, null);
         if (username != null && password != null) {
-            User user = new User(username, password);
-            User.mUser = user;
-            return user;
+            User.setmUser(new User(username, password));
+            return User.getmUser();
         }
         return null;
     }
 
     public static void updateCurrentUser(Context context, String username, String password) {
         getSharedPreferences(context);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString(USERNAME, username);
         editor.putString(PASSWORD, password);
         editor.commit();
@@ -83,7 +81,6 @@ public class MySharedPre {
 
     public static void unRegisterUser(Context context) {
         getSharedPreferences(context);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.remove(USERNAME);
         editor.remove(PASSWORD);
         editor.commit();
@@ -91,7 +88,6 @@ public class MySharedPre {
 
     public static void setRepeatAndShuffleTag(Context context, int repeatTag, int shuffleTag) {
         getSharedPreferences(context);
-//        SharedPreferences.Editor editor=sharedPreferences.edit();
         editor.putInt(REPEATTAG, repeatTag);
         editor.putInt(SHUFFLETAG, shuffleTag);
         editor.commit();
@@ -99,7 +95,6 @@ public class MySharedPre {
 
     public static void setOpenFLAG(Context context) {
         getSharedPreferences(context);
-//        SharedPreferences
         editor.putInt(FIRST, 1);
         editor.commit();
     }

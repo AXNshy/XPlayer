@@ -68,8 +68,8 @@ public class Home_Fragment extends Fragment implements View.OnClickListener {
     public void onStart() {
         super.onStart();
         // bindService
-        Intent intent = new Intent(context, PlayerService.class);
-        context.bindService(intent, conn, Context.BIND_AUTO_CREATE);
+            Intent intent = new Intent(context, PlayerService.class);
+            context.bindService(intent, conn, Context.BIND_AUTO_CREATE);
         Log.w(PlayerService.LOG_TAG, "Activity bindService");
     }
 
@@ -77,7 +77,7 @@ public class Home_Fragment extends Fragment implements View.OnClickListener {
     public void onPause() {
         super.onPause();
         // 进行unbind
-        context.unbindService(conn);
+            context.unbindService(conn);
         Log.w(PlayerService.LOG_TAG, "Activity unbindService");
     }
 

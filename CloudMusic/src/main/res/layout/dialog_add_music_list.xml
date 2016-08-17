@@ -52,10 +52,9 @@
             android:text="@string/confirm"
             android:textColor="@color/white" />
     </LinearLayout>
-
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="200dp"
+        android:layout_height="wrap_content"
         android:layout_below="@+id/et_input_music_list_name"
         android:layout_marginTop="72dp"
         android:elevation="0dp">
@@ -69,16 +68,13 @@
             android:text="@string/select_picture_from_photolib"
             android:textSize="16dp"
             android:elevation="0dp"/>
-        <ScrollView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-            <ImageView
-                android:id="@+id/iv_show_list_avatar"
-                android:padding="8dp"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:elevation="0dp"/>
-        </ScrollView>
+        <ImageView
+            android:id="@+id/iv_show_list_avatar"
+            android:padding="8dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:elevation="0dp"
+            android:layout_gravity="center"/>
 
     </FrameLayout>
 </RelativeLayout>

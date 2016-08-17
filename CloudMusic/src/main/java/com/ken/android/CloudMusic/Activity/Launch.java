@@ -15,6 +15,7 @@ import android.os.IBinder;
 import android.support.design.internal.NavigationMenuItemView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -22,13 +23,18 @@ import android.os.Bundle;
 
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.ken.android.CloudMusic.Adapter.DrawMenuAdapter;
 import com.ken.android.CloudMusic.Fragment.Home_Fragment;
 import com.ken.android.CloudMusic.Fragment.List_Fragment;
 import com.ken.android.CloudMusic.PlayerService;
@@ -46,7 +52,7 @@ import java.util.Observable;
 import java.util.Observer;
 
 @ContentView(R.layout.activity_launch)
-public class Launch extends BaseActivity implements Toolbar.OnMenuItemClickListener, List_Fragment.OnItemClickListener, Observer, View.OnClickListener {
+public class Launch extends BaseActivity implements Toolbar.OnMenuItemClickListener, List_Fragment.OnItemClickListener, Observer, View.OnClickListener, AdapterView.OnItemClickListener {
 
     private ActionBarDrawerToggle mDrawerToggle;
     private DrawerLayout mDrawerLayout;
@@ -63,9 +69,10 @@ public class Launch extends BaseActivity implements Toolbar.OnMenuItemClickListe
     private TextView view_username;
 
     private boolean PlayerBarToken;
-    private NavigationMenuItemView navigationView;
     @ViewInject(R.id.music_playerBarInApp)
     private LinearLayout playerBarLayout;
+    @ViewInject(R.id.lv_drawer_menu)
+    private ListView drawMenu;
 
     //绑定service与activity
 
@@ -114,12 +121,6 @@ public class Launch extends BaseActivity implements Toolbar.OnMenuItemClickListe
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-       /* if (!User.isUserExit(this)) {
-            Intent intent = new Intent(Launch.this, LoginActivity.class);
-            startActivity(intent);
-        }*/
-//        setContentView(R.layout.activity_launch);
         initView();
         initEvent();
         launchService();
@@ -128,7 +129,7 @@ public class Launch extends BaseActivity implements Toolbar.OnMenuItemClickListe
     private void initView() {
         PlayerBarToken = true;
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawerlayout);
-        mToolbar = (Toolbar) findViewById(R.id.toolbar_home);
+        mToolbar = (Toolbar) findViewById(R.id.toolbar_top);
         repeatImg = (ImageView) findViewById(R.id.iv_media_repeat);
         previousImg = (ImageView) findViewById(R.id.iv_media_previous);
         playImg = (ImageView) findViewById(R.id.iv_media_play);
@@ -138,12 +139,13 @@ public class Launch extends BaseActivity implements Toolbar.OnMenuItemClickListe
         mToolbar.setTitle("");
         mToolbar.setSubtitle("");
         setSupportActionBar(mToolbar);
-        mDrawerToggle=new ActionBarDrawerToggle(this,mDrawerLayout,mToolbar,R.string.drawer_open,R.string.drawer_close);
-        mDrawerLayout.addDrawerListener(mDrawerToggle);
+        final ActionBar ab = getSupportActionBar();
+        ab.setHomeAsUpIndicator(R.drawable.ic_drawer);
+        ab.setDisplayHomeAsUpEnabled(true);
         home = new Home_Fragment();
         FragmentManager fragmentManager = getFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.id_home_container, home).commit();
-        //initDrawer();
+        setUpDrawer();
     }
 
     private void initEvent() {
@@ -155,29 +157,10 @@ public class Launch extends BaseActivity implements Toolbar.OnMenuItemClickListe
     }
 
     /*
-    * 扫描本地音乐文件
-    * */
-    private void scanLocal() {
-        MusicInfoDao.scanMusic(this);
-    }
-
-    /*
     * 启动Service
     * */
     private void launchService() {
         startService(new Intent(Launch.this, PlayerService.class));
-       /* new Thread(new Runnable() {
-            @Override
-            public void run() {
-                DatabaseHelper.getInstance(Launch.this);
-            }
-        }).start();*/
-    }
-
-    @Override
-    protected void onPostCreate(Bundle savedInstanceState) {
-        mDrawerToggle.syncState();// 这个必须要，没有的话进去的默认是个箭头。。正常应该是三横杠的
-        super.onPostCreate(savedInstanceState);
     }
 
     @Override
@@ -200,19 +183,11 @@ public class Launch extends BaseActivity implements Toolbar.OnMenuItemClickListe
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-
-            case R.id.home:
-
-                mDrawerLayout.openDrawer(GravityCompat.START);
-                break;
-            case R.id.it_drawer_menu3:
-                Intent intent = new Intent();
-                intent.putExtra("user_info", User.mUser);
-                intent.setComponent(new ComponentName(Launch.this, User_InfoShowActivity.class));
-                startActivity(intent);
-
+        if (item.getItemId() == R.id.home) {
+            mDrawerLayout.openDrawer(GravityCompat.START);
+            return true;
         }
+
         return super.onOptionsItemSelected(item);
     }
 
@@ -279,9 +254,6 @@ public class Launch extends BaseActivity implements Toolbar.OnMenuItemClickListe
                 }
                 break;
             }
-            case R.id.iv_back_list_fragment:
-                onBackPressed();
-                break;
         }
         updateUI();
     }
@@ -310,13 +282,30 @@ public class Launch extends BaseActivity implements Toolbar.OnMenuItemClickListe
         }
     }
 
-    private void initDrawer() {
-        if (User.mUser != null) {
-            view_username.setText(User.mUser.getUsername());
-        } else {
-            view_username.setText("当前无用户登录");
-            mDrawerImg.setImageResource(R.drawable.music);
-        }
+    private void setUpDrawer() {
+        LayoutInflater inflater = LayoutInflater.from(this);
+        drawMenu.addHeaderView(inflater.inflate(R.layout.drawer_listview_header, drawMenu, false));
+        drawMenu.setAdapter(new DrawMenuAdapter(this));
+        drawMenu.setOnItemClickListener(this);
     }
 
+    @Override
+    public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+        switch (position){
+            case 1: Intent intent = new Intent();
+                intent.setComponent(new ComponentName(Launch.this, User_InfoShowActivity.class));
+                startActivity(intent);
+                Toast.makeText(Launch.this, position+"", Toast.LENGTH_SHORT).show();
+                break;
+            case 2:
+                Toast.makeText(Launch.this, position+"", Toast.LENGTH_SHORT).show();
+                break;
+            case 3:
+                Toast.makeText(Launch.this, position+"", Toast.LENGTH_SHORT).show();
+                break;
+            case 4:
+                Toast.makeText(Launch.this, position+"", Toast.LENGTH_SHORT).show();
+                break;
+        }
+    }
 }

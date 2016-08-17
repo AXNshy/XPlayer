@@ -155,7 +155,7 @@ public class MusicListActivity extends AppCompatActivity implements View.OnClick
     private void initView() {
         coordinator = (CoordinatorLayout) findViewById(R.id.layout_coordinator);
         musicListLayout = (LinearLayout) coordinator.findViewById(R.id.layout_list_activity);
-        returnImg = (ImageView) coordinator.findViewById(R.id.iv_back_list_fragment);
+        returnImg = (ImageView) coordinator.findViewById(R.id.iv_back);
         repeatImg = (ImageView) coordinator.findViewById(R.id.iv_media_repeat);
         previousImg = (ImageView) coordinator.findViewById(R.id.iv_media_previous);
         playImg = (ImageView) coordinator.findViewById(R.id.iv_media_play);
@@ -260,7 +260,7 @@ public class MusicListActivity extends AppCompatActivity implements View.OnClick
                 }
                 break;
             }
-            case R.id.iv_back_list_fragment:
+            case R.id.iv_back:
                 onBackPressed();
                 break;
         }

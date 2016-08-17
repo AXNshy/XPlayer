@@ -22,9 +22,6 @@ import java.util.List;
 public class MusicInfoDao implements Config {
 
     private static final String TABLE_MUSIC = "music_info";
-    private static final String TABLE_FAVORITE = "favorite_info";
-    private static final String TABLE_EAST = "east_info";
-    private static final String TABLE_ANIME = "anime_info";
 
     private static MusicInfoDao mDao;
 
@@ -51,23 +48,6 @@ public class MusicInfoDao implements Config {
     }
 
 
-/*    private List<MusicInfo> parseCursor(Cursor cursor) {
-        List<MusicInfo> list = new ArrayList<MusicInfo>();
-        while (cursor.moveToNext()) {
-            MusicInfo music = new MusicInfo();
-            music.musicId = cursor.getInt(cursor.getColumnIndex("_id"));
-            music.album = cursor.getString(cursor.getColumnIndex("album"));
-            music.duration = cursor.getInt(cursor.getColumnIndex("duration"));
-            music.musicName = cursor.getString(cursor.getColumnIndex("musicname"));
-            music.artist = cursor.getString(cursor.getColumnIndex("artist"));
-            music.data = cursor.getString(cursor.getColumnIndex("data"));
-            music.size = cursor.getInt(cursor.getColumnIndex("size"));
-            music.displayName = cursor.getString(cursor.getColumnIndex("displayName"));
-            list.add(music);
-        }
-        cursor.close();
-        return list;
-    }*/
 
     public static void addToList(SQLiteDatabase database, ArrayList<MusicInfo> list, String ListName) {
         for (MusicInfo music : list) {
@@ -132,17 +112,8 @@ public class MusicInfoDao implements Config {
         if (listId >= 0) {
             ArrayList<MusicInfo> list = new ArrayList<>();
             SQLiteDatabase sqLiteDatabase = DatabaseHelper.getHelper(context).getWritableDatabase();
-            /*Cursor cursor = sqLiteDatabase.rawQuery("select musicId from " + DatabaseHelper.TABLE_MUSIC_LIST_RELATIONSHIP + " where listId =" + listId, null);
-            String[] selectArgs = new String[cursor.getCount()];
-            int i = 0;
-            while (cursor.moveToNext()) {
-                selectArgs[i] = cursor.getInt(cursor.getColumnIndexOrThrow("musicId")) + "";
-                i++;
-            }*/
-//            Cursor cursor=sqLiteDatabase.
             Cursor cursor1 = sqLiteDatabase.rawQuery("select * from " + DatabaseHelper.TABLE_MUSIC + " where musicId in ( select musicId from " + DatabaseHelper.TABLE_MUSIC_LIST_RELATIONSHIP
                     + " where listId=" + listId + ") ", null);
-//            Cursor cursor1 = sqLiteDatabase.query(DatabaseHelper.TABLE_MUSIC,null,null,null, null, null, null);
             if (cursor1 != null && cursor1.moveToFirst()) {
                 do {
                     MusicInfo music = new MusicInfo();

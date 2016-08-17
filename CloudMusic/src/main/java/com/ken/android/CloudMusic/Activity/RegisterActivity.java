@@ -41,36 +41,36 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     }
 
     private void initView() {
-        username= (EditText) findViewById(R.id.et_input_username);
-        password= (EditText) findViewById(R.id.et_input_password);
-        register= (Button) findViewById(R.id.btn_register);
+        username = (EditText) findViewById(R.id.et_input_username);
+        password = (EditText) findViewById(R.id.et_input_password);
+        register = (Button) findViewById(R.id.btn_register);
     }
 
-    private void initListener(){
+    private void initListener() {
         register.setOnClickListener(this);
     }
 
     @Override
     public void onClick(View v) {
-        int id=v.getId();
-        switch (id){
-            case R.id.btn_register:{
-                userName=username.getText().toString();
-                Password=password.getText().toString();
-                registerUser(userName,Password);
+        int id = v.getId();
+        switch (id) {
+            case R.id.btn_register: {
+                userName = username.getText().toString();
+                Password = password.getText().toString();
+                registerUser(userName, Password);
 
             }
         }
     }
 
     private void registerUser(String UserName, String password) {
-        registerUrl= Config.WEB_SERVER_REGISTER+"userName="+UserName+"&password="+password;
-        if(HttpUtils.isServerConnection(this)) {
+        registerUrl = Config.WEB_SERVER_REGISTER + "userName=" + UserName + "&password=" + password;
+        if (HttpUtils.isServerConnection(this)) {
             new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    String result=HttpUtils.doGet(registerUrl);
-                    System.out.println("result:      "+result);
+                    String result = HttpUtils.doGet(registerUrl);
+                    System.out.println("result:      " + result);
                     Message msg = Message.obtain();
                     //给Message中的obj属性赋值
                     msg.obj = result;
@@ -80,24 +80,24 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             }).start();
         }
     }
-    private Handler handler=new Handler(){
+
+    private Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            String result= (String) msg.obj;
-            if(result.equals("ok")){
-                Toast.makeText(RegisterActivity.this,"注册成功",Toast.LENGTH_SHORT).show();
+            String result = (String) msg.obj;
+            if (result.equals("ok")) {
+                Toast.makeText(RegisterActivity.this, "注册成功", Toast.LENGTH_SHORT).show();
                 System.out.println("register succesful");
-                MySharedPre.updateCurrentUser(RegisterActivity.this,userName,Password);
+                MySharedPre.updateCurrentUser(RegisterActivity.this, userName, Password);
 
-                User.mUser=new User(userName,Password);
+                User.setmUser(new User(userName, Password));
 
-                Intent intent=new Intent(RegisterActivity.this,Launch.class);
+                Intent intent = new Intent(RegisterActivity.this, Launch.class);
                 startActivity(intent);
                 finish();
-            }
-            else {
-                Toast.makeText(RegisterActivity.this,"注册失败",Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(RegisterActivity.this, "注册失败", Toast.LENGTH_SHORT).show();
                 username.setText("");
                 password.setText("");
             }

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 
 
 import java.util.Date;
@@ -14,7 +15,7 @@ import java.util.Date;
 public class User implements Parcelable{
 
 
-    public static User mUser;
+    private static User mUser;
     private Integer id;
 
     private String username;
@@ -45,6 +46,17 @@ public class User implements Parcelable{
     public User(String username,String password){
         this.username=username;
         this.password=password;
+    }
+
+    public static User getUser(){
+        if(mUser!=null)
+            return mUser;
+        throw new IllegalStateException("当前User为空,请登录或注册");
+//                .w("TAG----User","当前User为空,请登录或注册");
+    }
+    public static User setUser(User user){
+        mUser=user;
+        return mUser;
     }
 
     public void setUsername(String username) {

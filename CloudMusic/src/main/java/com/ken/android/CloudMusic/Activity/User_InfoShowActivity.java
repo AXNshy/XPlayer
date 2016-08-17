@@ -49,8 +49,8 @@ public class User_InfoShowActivity extends BaseActivity{
     @ViewInject(R.id.tv_personInfo_telephone)
     private TextView telephoneTx;
 
-    @Event({R.id.iv_setAvatar, R.id.tv_personInfo_edit,R.id.iv_userInfo_return})
-    protected void initOnClickListener(View v) {
+    @Event(value={R.id.iv_setAvatar, R.id.tv_personInfo_edit,R.id.iv_userInfo_return})
+    private  void initOnClickListener(View v) {
         switch (v.getId()) {
             case R.id.iv_userInfo_return:
                 onBackPressed();
@@ -68,15 +68,15 @@ public class User_InfoShowActivity extends BaseActivity{
     }
 
     private void updateUI() {
-        if (User.mUser != null) {
-            nickNameTx.setText(User.mUser.getNickName());
-            genderTx.setText(User.mUser.getGender()+"");
+        if (User.getmUser() != null) {
+            nickNameTx.setText(User.getmUser().getNickName());
+            genderTx.setText(User.getmUser().getGender()+"");
             ageTx.setText("22");
-            birthdayTx.setText(User.mUser.getBirthday()+"");
-            addressTx.setText(User.mUser.getAddress());
-            emailTx.setText(User.mUser.getEmail());
-            qqTx.setText(User.mUser.getQq());
-            telephoneTx.setText(User.mUser.getTelephone());
+            birthdayTx.setText(User.getmUser().getBirthday()+"");
+            addressTx.setText(User.getmUser().getAddress());
+            emailTx.setText(User.getmUser().getEmail());
+            qqTx.setText(User.getmUser().getQq());
+            telephoneTx.setText(User.getmUser().getTelephone());
         }
     }
 
