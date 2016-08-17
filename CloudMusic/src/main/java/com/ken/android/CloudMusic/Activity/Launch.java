@@ -54,7 +54,6 @@ import java.util.Observer;
 @ContentView(R.layout.activity_launch)
 public class Launch extends BaseActivity implements Toolbar.OnMenuItemClickListener, List_Fragment.OnItemClickListener, Observer, View.OnClickListener, AdapterView.OnItemClickListener {
 
-    private ActionBarDrawerToggle mDrawerToggle;
     private DrawerLayout mDrawerLayout;
     private Fragment home;
     private Toolbar mToolbar;
@@ -139,6 +138,9 @@ public class Launch extends BaseActivity implements Toolbar.OnMenuItemClickListe
         mToolbar.setTitle("");
         mToolbar.setSubtitle("");
         setSupportActionBar(mToolbar);
+//        mDrawerLayout.setFitsSystemWindows(true);
+//        //将主页面顶部延伸至status bar;虽默认为false,但经测试,DrawerLayout需显示设置
+//        mDrawerLayout.setClipToPadding(false);
         final ActionBar ab = getSupportActionBar();
         ab.setHomeAsUpIndicator(R.drawable.ic_drawer);
         ab.setDisplayHomeAsUpEnabled(true);
@@ -283,28 +285,30 @@ public class Launch extends BaseActivity implements Toolbar.OnMenuItemClickListe
     }
 
     private void setUpDrawer() {
-        LayoutInflater inflater = LayoutInflater.from(this);
-        drawMenu.addHeaderView(inflater.inflate(R.layout.drawer_listview_header, drawMenu, false));
+//        LayoutInflater inflater = LayoutInflater.from(this);
+//        drawMenu.addHeaderView(inflater.inflate(R.layout.drawer_listview_header, drawMenu, false));
         drawMenu.setAdapter(new DrawMenuAdapter(this));
         drawMenu.setOnItemClickListener(this);
+
     }
 
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
         switch (position){
-            case 1: Intent intent = new Intent();
+            case 0: Intent intent = new Intent();
                 intent.setComponent(new ComponentName(Launch.this, User_InfoShowActivity.class));
                 startActivity(intent);
+                Toast.makeText(Launch.this, position+"", Toast.LENGTH_SHORT).show();
+                break;
+            case 1:
                 Toast.makeText(Launch.this, position+"", Toast.LENGTH_SHORT).show();
                 break;
             case 2:
                 Toast.makeText(Launch.this, position+"", Toast.LENGTH_SHORT).show();
                 break;
             case 3:
-                Toast.makeText(Launch.this, position+"", Toast.LENGTH_SHORT).show();
-                break;
-            case 4:
-                Toast.makeText(Launch.this, position+"", Toast.LENGTH_SHORT).show();
+                Toast.makeText(Launch.this, position + "", Toast.LENGTH_SHORT).show();
+                System.exit(0);
                 break;
         }
     }

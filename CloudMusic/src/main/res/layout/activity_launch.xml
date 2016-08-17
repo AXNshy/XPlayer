@@ -16,6 +16,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
+
             <include layout="@layout/toolbar_top" />
 
             <FrameLayout
@@ -26,20 +27,11 @@
 
             </FrameLayout>
         </LinearLayout>
+
         <include layout="@layout/media_service" />
 
 
     </RelativeLayout>
     <!--drawer-->
-    <ListView
-        android:id="@+id/lv_drawer_menu"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="start"
-        android:paddingTop="0dp"
-        android:background="#ffffffff"
-        android:clipToPadding="false"
-        android:divider="@null"
-        android:fitsSystemWindows="true"
-        android:listSelector="?attr/selectableItemBackground"  />
+    <include layout="@layout/drawer_listview_header" />
 </android.support.v4.widget.DrawerLayout>
