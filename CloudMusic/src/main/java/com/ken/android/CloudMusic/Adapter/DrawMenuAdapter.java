@@ -18,12 +18,12 @@ import java.util.List;
  */
 public class DrawMenuAdapter extends BaseAdapter {
     private Context context;
-    private String[] menu={"用户管理","","退出"};
+    private String[] menu={"用户管理","自定义View","退出"};
     private LayoutInflater mInflater;
 
     private List<String> mItems = new ArrayList<String>(
             Arrays.asList(
-                    "用户管理","","","退出"
+                    "用户管理","自定义View","退出"
             ));
 
     public DrawMenuAdapter(Context context) {

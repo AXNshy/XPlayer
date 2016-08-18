@@ -44,6 +44,10 @@
         <activity android:name=".Activity.MusicPlayingActivity">
 
         </activity>
+        <!--自定义View所在的Activity-->
+        <activity android:name=".Fragment.CustomViewTest">
+
+        </activity>
         <service android:name=".PlayerService">
             <intent-filter >
                 <action android:name="com.axnshy.action.PlayerService"/>

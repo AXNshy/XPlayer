@@ -35,6 +35,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ken.android.CloudMusic.Adapter.DrawMenuAdapter;
+import com.ken.android.CloudMusic.Fragment.CustomViewOne;
+import com.ken.android.CloudMusic.Fragment.CustomViewTest;
 import com.ken.android.CloudMusic.Fragment.Home_Fragment;
 import com.ken.android.CloudMusic.Fragment.List_Fragment;
 import com.ken.android.CloudMusic.PlayerService;
@@ -301,12 +303,14 @@ public class Launch extends BaseActivity implements Toolbar.OnMenuItemClickListe
                 Toast.makeText(Launch.this, position+"", Toast.LENGTH_SHORT).show();
                 break;
             case 1:
-                Toast.makeText(Launch.this, position+"", Toast.LENGTH_SHORT).show();
+                /*CustomViewTest customViewTest=new CustomViewTest();
+                FragmentManager manager=getFragmentManager();
+                manager.beginTransaction().replace(R.id.id_home_container,customViewTest).commit();
+                Toast.makeText(Launch.this, position+"", Toast.LENGTH_SHORT).show();*/
+                Intent customviewintent=new Intent(Launch.this,CustomViewTest.class);
+                startActivity(customviewintent);
                 break;
             case 2:
-                Toast.makeText(Launch.this, position+"", Toast.LENGTH_SHORT).show();
-                break;
-            case 3:
                 Toast.makeText(Launch.this, position + "", Toast.LENGTH_SHORT).show();
                 System.exit(0);
                 break;
