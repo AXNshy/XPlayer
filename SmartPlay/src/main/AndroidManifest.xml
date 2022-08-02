@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.luffy.smartplay">
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <application
+        android:name="com.luffy.android.smartplay.Activity.MyApp"
+        android:allowBackup="true"
+        android:icon="@drawable/appicon"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+        <activity android:name="com.luffy.android.smartplay.Activity.HomeActivity"
+            android:launchMode="singleTask">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name="com.luffy.android.smartplay.Activity.UserInfoShowActivity">
+
+        </activity>
+        <activity android:name="com.luffy.android.smartplay.Activity.MusicListActivity">
+            <intent-filter>
+            <action android:name="com.axnshy.player.action.allmusic"/>
+            <action android:name="com.axnshy.player.action.favoritemusic"/>
+            <action android:name="com.axnshy.player.action.download"/>
+            <action android:name="com.axnshy.player.action.recentplay"/>
+        </intent-filter>
+        </activity>
+        <activity android:name="com.luffy.android.smartplay.Activity.RegisterActivity">
+
+        </activity>
+        <activity android:name="com.luffy.android.smartplay.Activity.MusicPlayingActivity">
+
+        </activity>
+        <service android:name="com.luffy.android.smartplay.PlayerService">
+            <intent-filter >
+                <action android:name="com.axnshy.action.PlayerService"/>
+
+            </intent-filter>
+        </service>
+        <receiver android:name="com.luffy.android.smartplay.RemoteControlReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.MEDIA_BUTTON"/>
+            </intent-filter>
+        </receiver>
+    </application>
+</manifest>

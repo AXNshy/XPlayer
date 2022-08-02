@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/drawerlayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_weight="1"
+    android:fitsSystemWindows="true"
+    tools:ignore="MissingClass">
+
+    <!--Content-->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+            <include layout="@layout/toorbar" />
+
+            <FrameLayout
+                android:id="@+id/id_home_container"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1">
+
+            </FrameLayout>
+        </LinearLayout>
+        <include
+            android:id="@+id/controller"
+            layout="@layout/media_service" />
+    </RelativeLayout>
+
+    <!--drawer-->
+    <com.google.android.material.navigation.NavigationView
+        android:id="@+id/design_navigation_view"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:background="@color/colorDrawerBack"
+        android:fitsSystemWindows="true"
+        app:headerLayout="@layout/navi_drawer_head"
+        app:menu="@menu/drawer" />
+
+</androidx.drawerlayout.widget.DrawerLayout>

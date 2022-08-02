@@ -1,0 +1,2 @@
+include ':SmartPlay'
+include ':player'
