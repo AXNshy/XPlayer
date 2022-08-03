@@ -14,10 +14,9 @@ import com.luffy.smartplay.db.dao.AlbumDao
 import com.luffy.smartplay.db.dao.MusicDao
 import com.luffy.smartplay.ui.MyApp
 
-@Database(entities=[MusicData::class, AlbumData::class],version =DB_VERSION)
+@Database(entities=[MusicData::class, AlbumData::class],version =DB_VERSION, exportSchema = false)
 abstract class MyDatabase : RoomDatabase() {
     companion object {
-        private var mDb: MyDatabase? = null
         const val DB_VERSION = 3
         const val DB_NAME = "music_player"
         const val TABLE_MUSIC = "music_info"

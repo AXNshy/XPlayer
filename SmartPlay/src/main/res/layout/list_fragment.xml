@@ -49,7 +49,7 @@
             android:textColor="@color/white"
             android:textSize="16dp" />
 
-        <de.hdodenhof.circleimageview.CircleImageView
+        <androidx.constraintlayout.utils.widget.ImageFilterButton
             android:id="@+id/iv_list_creator_avatar"
             android:layout_width="40dp"
             android:layout_height="40dp"

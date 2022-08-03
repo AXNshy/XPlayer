@@ -13,7 +13,7 @@ import com.luffy.smartplay.ui.viewmodel.ArtWorkViewModel
  * Created by axnshy on 16/7/31.
  */
 class AlbumDetailFragment : BaseFragment<ArtworkBinding, ArtWorkViewModel>() {
-    var mMusicInfo: MusicData? = null
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -26,6 +26,5 @@ class AlbumDetailFragment : BaseFragment<ArtworkBinding, ArtWorkViewModel>() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        mMusicInfo = arguments?.getParcelable("MusicInfo")
     }
 }

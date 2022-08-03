@@ -12,4 +12,7 @@ object MusicRepository {
         data.albumId = albumId
         dao.addMusicData(data)
     }
+
+    suspend fun scanMusic(){
+    }
 }

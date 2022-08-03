@@ -6,14 +6,12 @@ import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.core.app.DialogCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.luffy.smartplay.db.bean.AlbumData
 import com.luffy.smartplay.db.bean.MusicData
 import com.luffy.smartplay.databinding.DialogCollectBinding
 import com.luffy.smartplay.databinding.DialogListItemBinding
-import com.luffy.smartplay.db.MyDatabase
 import com.luffy.smartplay.db.repo.MusicRepository
 import com.luffy.smartplay.ui.base.BaseBindingAdapter
 import com.luffy.smartplay.ui.base.BindingViewHolder

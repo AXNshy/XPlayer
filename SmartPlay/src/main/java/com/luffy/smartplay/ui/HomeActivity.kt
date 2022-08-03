@@ -15,24 +15,25 @@ import android.util.Log
 import android.view.*
 import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import com.luffy.smartplay.player.Service
 import com.luffy.smartplay.databinding.ActivityLaunchBinding
+import com.luffy.smartplay.db.repo.MusicRepository
 import com.luffy.smartplay.ui.base.BaseActivity
 import com.luffy.smartplay.ui.viewmodel.HomeViewModel
 import com.luffy.smartplay.utils.AccountUtils
+import kotlinx.coroutines.launch
 
 class HomeActivity : BaseActivity<ActivityLaunchBinding, HomeViewModel>(), Toolbar.OnMenuItemClickListener,
     AlbunFragment.OnItemClickListener, View.OnClickListener {
 
 
-    private var mToolbar: Toolbar? = null
     private var PlayerBarToken = false
 
     //绑定service与activity
     //绑定service与activity
     private var mService: PlayerService? = null
 
-    private lateinit var mDrawerToggle:ActionBarDrawerToggle
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (!AccountUtils.isUserExit(this)) {
@@ -48,17 +49,17 @@ class HomeActivity : BaseActivity<ActivityLaunchBinding, HomeViewModel>(), Toolb
     private fun initView() {
         PlayerBarToken = true
         viewBinding.apply{
-            mToolbar!!.title = ""
-            mToolbar!!.subtitle = ""
-            setSupportActionBar(mToolbar)
-            mDrawerToggle = ActionBarDrawerToggle(
-                this@HomeActivity,
-                drawerlayout,
-                mToolbar,
-                R.string.drawer_open,
-                R.string.drawer_close
-            )
-            drawerlayout.addDrawerListener(mDrawerToggle)
+//            mToolbar!!.title = ""
+//            mToolbar!!.subtitle = ""
+//            setSupportActionBar(mToolbar)
+//            mDrawerToggle = ActionBarDrawerToggle(
+//                this@HomeActivity,
+//                drawerlayout,
+//                mToolbar,
+//                R.string.drawer_open,
+//                R.string.drawer_close
+//            )
+//            drawerlayout.addDrawerListener(mDrawerToggle)
             val home = HomeFragment()
             supportFragmentManager.beginTransaction().replace(R.id.id_home_container, home).commit()
         }
@@ -68,11 +69,25 @@ class HomeActivity : BaseActivity<ActivityLaunchBinding, HomeViewModel>(), Toolb
 
     private fun initEvent() {
         viewBinding.controller.apply {
-            ivMediaPlay.setOnClickListener(this@HomeActivity)
-            ivMediaPrevious.setOnClickListener(this@HomeActivity)
-            ivMediaNext.setOnClickListener(this@HomeActivity)
-            ivMediaRepeat.setOnClickListener(this@HomeActivity)
-            ivMediaShuffle.setOnClickListener(this@HomeActivity)
+            ivMediaPlay.setOnClickListener {
+
+            }
+            ivMediaPrevious.setOnClickListener {
+
+            }
+            ivMediaNext.setOnClickListener {
+
+            }
+            ivMediaRepeat.setOnClickListener {
+                lifecycleScope.launch {
+                    viewModel.switchRepeatMode()
+                }
+            }
+            ivMediaShuffle.setOnClickListener {
+                lifecycleScope.launch {
+                    viewModel.switchShuffleMode()
+                }
+            }
         }
     }
 
@@ -80,7 +95,9 @@ class HomeActivity : BaseActivity<ActivityLaunchBinding, HomeViewModel>(), Toolb
     * 扫描本地音乐文件
     * */
     private fun scanLocal() {
-        MusicDao.Companion.scanMusic(this)
+        lifecycleScope.launch {
+            MusicRepository.scanMusic()
+        }
     }
 
     /*
@@ -88,23 +105,14 @@ class HomeActivity : BaseActivity<ActivityLaunchBinding, HomeViewModel>(), Toolb
     * */
     private fun launchService() {
         startService(Intent(this@HomeActivity, PlayerService::class.java))
-        /* new Thread(new Runnable() {
-            @Override
-            public void run() {
-                DatabaseHelper.getInstance(Launch.this);
-            }
-        }).start();*/
-    }
-
-    override fun onPostCreate(savedInstanceState: Bundle?) {
-        mDrawerToggle!!.syncState() // 这个必须要，没有的话进去的默认是个箭头。。正常应该是三横杠的
-        super.onPostCreate(savedInstanceState)
     }
 
     override fun onMenuItemClick(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.it_menu_scan -> {
-                MusicDao.Companion.getAllMusic(this)
+                lifecycleScope.launch {
+                    MusicRepository.scanMusic()
+                }
             }
         }
         return false
@@ -131,6 +139,7 @@ class HomeActivity : BaseActivity<ActivityLaunchBinding, HomeViewModel>(), Toolb
     }
 
     override fun updateToolbar(string: String?) {}
+
     override fun onClick(v: View) {
         //判断Service是否存在
         if (!Service.isMyServiceRunning(this, PlayerService::class.java)) {
@@ -155,13 +164,6 @@ class HomeActivity : BaseActivity<ActivityLaunchBinding, HomeViewModel>(), Toolb
                 viewBinding.controller.ivMediaShuffle.setBackgroundResource(R.drawable.base)
                 mService!!.shuffleTag = 0
             }
-            R.id.iv_media_previous -> {
-            }
-            R.id.iv_media_next -> {
-            }
-            R.id.iv_media_play -> {
-            }
-            R.id.iv_back_list_fragment -> onBackPressed()
         }
         updateUI()
     }
@@ -177,6 +179,8 @@ class HomeActivity : BaseActivity<ActivityLaunchBinding, HomeViewModel>(), Toolb
     private fun initDrawer() {
     }
 
-    override val viewBinding: ActivityLaunchBinding by lazy{ ActivityLaunchBinding.inflate(layoutInflater) }
     override val viewModel: HomeViewModel by lazy{ ViewModelProvider(this)[HomeViewModel::class.java]}
+    override fun bindViewBinding(): ActivityLaunchBinding {
+        return ActivityLaunchBinding.inflate(layoutInflater)
+    }
 }

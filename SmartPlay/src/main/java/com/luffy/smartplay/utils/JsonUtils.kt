@@ -2,7 +2,7 @@ package com.luffy.smartplay.utils
 
 import com.luffy.smartplay.state.AccountState
 import com.google.gson.Gson
-import com.luffy.smartplay.User
+import com.luffy.smartplay.db.bean.User
 
 /**
  * Created by axnshy on 2016/3/14.

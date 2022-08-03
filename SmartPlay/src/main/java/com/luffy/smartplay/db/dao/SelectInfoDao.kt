@@ -10,5 +10,5 @@ import java.util.ArrayList
 /**
  * Created by axnshy on 16/5/24.
  */
-class SelectInfoDao {
+interface SelectInfoDao {
 }

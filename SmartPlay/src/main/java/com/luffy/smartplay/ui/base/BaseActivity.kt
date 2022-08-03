@@ -10,10 +10,15 @@ import androidx.viewbinding.ViewBinding
  */
 abstract class BaseActivity<T : ViewBinding,M:ViewModel> : AppCompatActivity() {
 
-    abstract val viewBinding : T
+    lateinit var viewBinding : T
     abstract val viewModel : M
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setContentView(bindViewBinding().apply {
+            viewBinding = this
+        }.root)
     }
+
+    abstract fun bindViewBinding() : T
 }

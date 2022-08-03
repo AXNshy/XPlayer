@@ -46,7 +46,7 @@ class MyDialog : Dialog, AdapterView.OnItemClickListener {
         mList!!.add(0, "我的收藏")
         mList!!.add(1, "东方幻想")
         mList!!.add(2, "动漫收藏")
-        mAdapter = ArrayAdapter<Any?>(window.context, android.R.layout.simple_list_item_1, mList!!)
+//        mAdapter = ArrayAdapter<Any?>(window.context, android.R.layout.simple_list_item_1, mList!!)
         mListView!!.adapter = mAdapter
     }
 

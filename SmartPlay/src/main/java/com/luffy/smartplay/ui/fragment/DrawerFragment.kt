@@ -5,7 +5,7 @@ import com.luffy.smartplay.R
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.luffy.smartplay.ui.adapter.DrawerListAdapter
-import com.luffy.smartplay.MySharedPre
+import com.luffy.smartplay.AppSettings
 import android.content.ComponentName
 import android.content.Intent
 import com.luffy.smartplay.ui.LoginActivity
@@ -13,27 +13,31 @@ import com.luffy.smartplay.ui.UserInfoShowActivity
 import android.view.View
 import android.widget.*
 import androidx.lifecycle.ViewModelProvider
-import com.luffy.smartplay.User
+import androidx.recyclerview.widget.RecyclerView
+import com.luffy.smartplay.databinding.HomeBinding
+import com.luffy.smartplay.db.bean.User
 import com.luffy.smartplay.databinding.HomeDrawerBinding
 import com.luffy.smartplay.ui.base.BaseFragment
 import com.luffy.smartplay.ui.viewmodel.HomeDrawerViewModel
+import com.luffy.smartplay.ui.viewmodel.HomeFragmentViewModel
 import java.util.ArrayList
 
 /**
  * Created by axnshy on 16/4/18.
  */
 class DrawerFragment : BaseFragment<HomeDrawerBinding,HomeDrawerViewModel>(), AdapterView.OnItemClickListener {
-    private val mDrawerListView: ListView? = null
+    private val mDrawerListView: RecyclerView? = null
     private val mDrawerImg: ImageView? = null
     private val view_username: TextView? = null
-    private var mDrawerList: ArrayList<String>? = null
-    private var mDrawerListAdapter: ListAdapter? = null
+    private var mDrawerList: MutableList<String>? = null
+    private var mDrawerListAdapter: DrawerListAdapter? = null
     private val mDrawerTop: RelativeLayout? = null
     private var mView: View? = null
-    var user:User? = null
+    var user: User? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         initDrawer()
         initList()
         setView()
@@ -43,7 +47,9 @@ class DrawerFragment : BaseFragment<HomeDrawerBinding,HomeDrawerViewModel>(), Ad
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
+        viewModel = ViewModelProvider(this)[HomeDrawerViewModel::class.java]
+        viewBinding = HomeDrawerBinding.inflate(layoutInflater, container, false)
         return HomeDrawerBinding.inflate(inflater,container,false).root
     }
 
@@ -61,10 +67,10 @@ class DrawerFragment : BaseFragment<HomeDrawerBinding,HomeDrawerViewModel>(), Ad
         mDrawerList!!.add(0, "我的资料")
         mDrawerList!!.add(1, "注销帐号")
         mDrawerList!!.add(2, "出退")
-        mDrawerListAdapter = DrawerListAdapter(mView!!.context, mDrawerList!!)
+        mDrawerListAdapter = DrawerListAdapter(mDrawerList!!)
         //System.out.println(mDrawerListView);
         mDrawerListView!!.adapter = mDrawerListAdapter
-        mDrawerListView.onItemClickListener = this
+
     }
 
     fun setView() {
@@ -79,7 +85,7 @@ class DrawerFragment : BaseFragment<HomeDrawerBinding,HomeDrawerViewModel>(), Ad
                 startActivity(intent)
             }
             1 -> {
-                MySharedPre.unRegisterUser(view.context)
+                AppSettings.unRegisterUser()
                 val intent = Intent(view.context, LoginActivity::class.java)
                 startActivity(intent)
             }
@@ -88,7 +94,4 @@ class DrawerFragment : BaseFragment<HomeDrawerBinding,HomeDrawerViewModel>(), Ad
             }
         }
     }
-
-    override val viewBinding: HomeDrawerBinding by lazy { HomeDrawerBinding.inflate(layoutInflater,) }
-    override val viewModel: HomeDrawerViewModel by lazy { ViewModelProvider(requireActivity())[HomeDrawerViewModel::class.java] }
 }

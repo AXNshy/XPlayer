@@ -26,25 +26,6 @@ class PlayerService : Service(), Config, MediaPlayer.OnPreparedListener {
     var repeatTag = 0
     var shuffleTag = 0
     private var mList: ArrayList<MusicData?>? = null
-    var handler: Handler = object : Handler() {
-        override fun handleMessage(msg: Message) {
-            super.handleMessage(msg)
-            when (msg.what) {
-                1 -> {
-                    mList = msg.obj as ArrayList<MusicData?>
-                    currentMusic = mList!![0]
-                    Log.e("TAG", "List 以获取")
-                    mPlayer = createMediaPlayer()
-                        mPlayer?.setOnPreparedListener(this@PlayerService)
-                    mPlayer?.setAudioStreamType(AudioManager.STREAM_MUSIC)
-                }
-                0 -> {
-                    Log.e("TAG", " --------------- currentMusic -------------$currentMusic")
-                    mObservable!!.notifyChanged(currentMusic)
-                }
-            }
-        }
-    }
 
     /*
         * 当前播放资源的绝对路径
@@ -88,13 +69,6 @@ class PlayerService : Service(), Config, MediaPlayer.OnPreparedListener {
         //getList(PlayerService.this);
     }
 
-    fun getList(context: Context?) {
-        Thread {
-            val message = handler.obtainMessage(1, MusicDao.Companion.getAllMusic(context))
-            handler.sendMessage(message)
-        }.start()
-    }
-
     fun getMyList(): ArrayList<MusicData?>? {
         return mList
     }
@@ -127,11 +101,7 @@ class PlayerService : Service(), Config, MediaPlayer.OnPreparedListener {
     }
 
     fun play(music: MusicData?) {
-        getPlayerState()
         try {
-            mPlayer?.reset()
-            mPlayer?.setDataSource(music?.data)
-            mPlayer?.prepare()
             mPlayer?.start()
             currentMusic = music
             PlayerState = MediaPlayer_PLAY
@@ -178,7 +148,6 @@ class PlayerService : Service(), Config, MediaPlayer.OnPreparedListener {
                         music
                     }
                     PlayerState = MediaPlayer_PLAY
-                    handler.sendMessage(handler.obtainMessage(0, currentMusic))
                 } catch (e: IOException) {
                     e.printStackTrace()
                 }

@@ -4,4 +4,13 @@ import androidx.lifecycle.ViewModel
 
 class HomeViewModel: ViewModel() {
 
+    suspend fun switchRepeatMode() {
+
+    }
+
+    suspend fun switchShuffleMode() {
+
+
+    }
+
 }

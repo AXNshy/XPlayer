@@ -63,6 +63,8 @@ class MusicPlayingActivity : BaseActivity<MusicPlayBinding,PlayerViewModel>(), O
     private fun updateUI() {
     }
 
-    override val viewBinding: MusicPlayBinding by lazy { MusicPlayBinding.inflate(layoutInflater) }
     override val viewModel: PlayerViewModel by lazy { ViewModelProvider(this)[PlayerViewModel::class.java] }
+    override fun bindViewBinding(): MusicPlayBinding {
+       return MusicPlayBinding.inflate(layoutInflater)
+    }
 }

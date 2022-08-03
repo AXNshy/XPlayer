@@ -13,7 +13,6 @@ import com.luffy.smartplay.db.bean.MusicData
 import com.luffy.smartplay.databinding.ItemMenuBinding
 import com.luffy.smartplay.databinding.ListActivityBinding
 import com.luffy.smartplay.ui.fragment.AlbunFragment
-import com.luffy.smartplay.ui.fragment.SystemListFragment
 import com.luffy.smartplay.ui.base.BaseActivity
 import com.luffy.smartplay.ui.viewmodel.ListActivityViewModel
 import java.util.*
@@ -23,7 +22,7 @@ import java.util.*
  */
 class MusicListActivity : BaseActivity<ListActivityBinding, ListActivityViewModel>(),
     View.OnClickListener,
-    AlbunFragment.OnItemClickListener, SystemListFragment.OnItemClickListener, Observer,
+    AlbunFragment.OnItemClickListener, Observer,
     MusicListAdapter.OnItemMenuClickListener {
 
     //绑定service与activity
@@ -75,12 +74,11 @@ class MusicListActivity : BaseActivity<ListActivityBinding, ListActivityViewMode
 
     }
 
-    override val viewBinding: ListActivityBinding by lazy {
-        ListActivityBinding.inflate(
+    override fun bindViewBinding(): ListActivityBinding {
+        return ListActivityBinding.inflate(
             layoutInflater
         )
     }
-
     override val viewModel: ListActivityViewModel by lazy { ViewModelProvider(this)[ListActivityViewModel::class.java] }
     val mediaMenuViewBinding: ItemMenuBinding by lazy {
         ItemMenuBinding.inflate(
