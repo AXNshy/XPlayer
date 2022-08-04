@@ -29,9 +29,12 @@
 
             </FrameLayout>
         </LinearLayout>
-        <include
-            android:id="@+id/controller"
-            layout="@layout/media_service" />
+        <androidx.compose.ui.platform.ComposeView
+            android:id="@+id/compose_container"
+            android:layout_alignParentBottom="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            />
     </RelativeLayout>
 
     <!--drawer-->

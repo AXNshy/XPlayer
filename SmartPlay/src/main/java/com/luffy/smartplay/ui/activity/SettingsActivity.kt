@@ -1,4 +1,4 @@
-package com.luffy.smartplay.ui
+package com.luffy.smartplay.ui.activity
 
 /**
  * Created by axnshy on 16/8/5.

@@ -5,6 +5,8 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <uses-permission android:name="android.permission.INTERNET"/>
+
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
     <application
         android:name=".ui.MyApp"
         android:allowBackup="true"
@@ -12,7 +14,7 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ui.HomeActivity"
+        <activity android:name=".ui.activity.HomeActivity"
             android:launchMode="singleTask"
             android:exported="true">
             <intent-filter>
@@ -20,10 +22,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.UserInfoShowActivity">
+        <activity android:name=".ui.activity.UserInfoShowActivity">
 
         </activity>
-        <activity android:name=".ui.MusicListActivity"
+        <activity android:name=".ui.activity.MusicListActivity"
             android:exported="true">
             <intent-filter>
             <action android:name="com.axnshy.player.action.allmusic"/>
@@ -35,7 +37,7 @@
      <!--   <activity android:name="com.luffy.android.smartplay.Activity.RegisterActivity">
 
         </activity>-->
-        <activity android:name=".ui.MusicPlayingActivity">
+        <activity android:name=".ui.activity.MusicPlayingActivity">
 
         </activity>
         <service android:name=".player.PlayerService"

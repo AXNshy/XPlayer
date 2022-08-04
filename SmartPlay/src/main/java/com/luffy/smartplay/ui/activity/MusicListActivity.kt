@@ -1,4 +1,4 @@
-package com.luffy.smartplay.ui
+package com.luffy.smartplay.ui.activity
 
 import android.os.Bundle
 import android.util.Log

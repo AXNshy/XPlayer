@@ -8,18 +8,16 @@ import com.luffy.smartplay.ui.adapter.DrawerListAdapter
 import com.luffy.smartplay.AppSettings
 import android.content.ComponentName
 import android.content.Intent
-import com.luffy.smartplay.ui.LoginActivity
-import com.luffy.smartplay.ui.UserInfoShowActivity
+import com.luffy.smartplay.ui.activity.LoginActivity
+import com.luffy.smartplay.ui.activity.UserInfoShowActivity
 import android.view.View
 import android.widget.*
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
-import com.luffy.smartplay.databinding.HomeBinding
 import com.luffy.smartplay.db.bean.User
 import com.luffy.smartplay.databinding.HomeDrawerBinding
 import com.luffy.smartplay.ui.base.BaseFragment
 import com.luffy.smartplay.ui.viewmodel.HomeDrawerViewModel
-import com.luffy.smartplay.ui.viewmodel.HomeFragmentViewModel
 import java.util.ArrayList
 
 /**

@@ -1,4 +1,4 @@
-package com.luffy.smartplay.ui
+package com.luffy.smartplay.ui.activity
 
 import androidx.lifecycle.ViewModelProvider
 import com.luffy.smartplay.databinding.LoginBinding

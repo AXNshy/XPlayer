@@ -1,18 +1,23 @@
 package com.luffy.smartplay.player
 
-import android.app.Service
-import android.content.Context
-import android.content.Intent
-import android.media.AudioManager
+import android.app.Notification
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.graphics.Color
 import android.media.MediaPlayer
-import android.os.Handler
-import android.os.IBinder
-import android.os.Message
-import android.util.Log
-import androidx.annotation.Nullable
+import android.os.Build
+import android.os.Bundle
+import android.support.v4.media.MediaBrowserCompat
+import android.support.v4.media.session.MediaSessionCompat
+import android.support.v4.media.session.PlaybackStateCompat
+import androidx.annotation.RequiresApi
+import androidx.core.app.NotificationCompat
+import androidx.core.content.ContextCompat
+import androidx.media.MediaBrowserServiceCompat
+import androidx.media.session.MediaButtonReceiver
 import com.luffy.player.PlayerBase
 import com.luffy.smartplay.Config
-import com.luffy.smartplay.db.dao.MusicDao
+import com.luffy.smartplay.R
 import com.luffy.smartplay.db.bean.MusicData
 import java.io.IOException
 import java.util.*
@@ -20,9 +25,7 @@ import java.util.*
 /**
  * Created by axnshy on 16/4/19.
  */
-class PlayerService : Service(), Config, MediaPlayer.OnPreparedListener {
-    private var mObservable: MyObservable? = null
-
+class PlayerService : MediaBrowserServiceCompat(), Config, MediaPlayer.OnPreparedListener {
     var repeatTag = 0
     var shuffleTag = 0
     private var mList: ArrayList<MusicData?>? = null
@@ -39,35 +42,173 @@ class PlayerService : Service(), Config, MediaPlayer.OnPreparedListener {
     var currentMusic: MusicData? = null
     private var mPlayer: PlayerBase? = null
 
-    //private Context context;
-    @Nullable
-    override fun onBind(intent: Intent): IBinder? {
-        Log.d(LOG_TAG, "onBind")
-        return null
-    }
-
-    override fun onUnbind(intent: Intent): Boolean {
-        Log.d(LOG_TAG, "onUnbind")
-        return super.onUnbind(intent)
-    }
-
     override fun onPrepared(mp: MediaPlayer) {}
+
+
+    private val MY_MEDIA_ROOT_ID = "media_root_id"
+    private val MY_EMPTY_MEDIA_ROOT_ID = "empty_root_id"
+
+    lateinit var mediaSession : MediaSessionCompat
+    private lateinit var stateBuilder: PlaybackStateCompat.Builder
 
     override fun onCreate() {
         super.onCreate()
-        mObservable = MyObservable()
+        // Create a MediaSessionCompat
+        mediaSession = MediaSessionCompat(this, LOG_TAG).apply {
+
+            // Enable callbacks from MediaButtons and TransportControls
+            setFlags(MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS
+                    or MediaSessionCompat.FLAG_HANDLES_TRANSPORT_CONTROLS
+            )
+
+            // Set an initial PlaybackState with ACTION_PLAY, so media buttons can start the player
+            stateBuilder = PlaybackStateCompat.Builder()
+                .setActions(PlaybackStateCompat.ACTION_PLAY
+                        or PlaybackStateCompat.ACTION_PLAY_PAUSE
+                )
+            setPlaybackState(stateBuilder.build())
+
+            // MySessionCallback() has methods that handle callbacks from a media controller
+//            setCallback()
+
+            // Set the session's token so that client activities can communicate with it.
+            setSessionToken(sessionToken)
+        }
+
+        // Given a media session and its context (usually the component containing the session)
+        // Create a NotificationCompat.Builder
+
+        // Get the session's metadata
+        val controller = mediaSession.controller
+        val mediaMetadata = controller.metadata
+        val description = mediaMetadata?.description
+
+        val channelId = if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+            createNotificationChannel(packageName,PlayerService.javaClass.name)
+        }else {
+            ""
+        }
+
+        val builder = NotificationCompat.Builder(this, channelId!!).apply {
+            // Add the metadata for the currently playing track
+            setContentTitle(description?.title?:"1111")
+            setContentText(description?.subtitle?:"2222")
+            setSubText(description?.description?:"33333")
+            setLargeIcon(description?.iconBitmap)
+
+            // Enable launching the player by clicking the notification
+            setContentIntent(controller.sessionActivity)
+
+            // Stop the service when the notification is swiped away
+            setDeleteIntent(
+                MediaButtonReceiver.buildMediaButtonPendingIntent(
+                    this@PlayerService,
+                    PlaybackStateCompat.ACTION_STOP
+                )
+            )
+
+            // Make the transport controls visible on the lockscreen
+            setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
+
+            // Add an app icon and set its accent color
+            // Be careful about the color
+            setSmallIcon(R.drawable.appicon)
+            color = ContextCompat.getColor(this@PlayerService, R.color.colorPrimary)
+
+            // Add a pause button
+            addAction(
+                NotificationCompat.Action(
+                    R.drawable.pause,
+                    getString(R.string.pause),
+                    MediaButtonReceiver.buildMediaButtonPendingIntent(
+                        this@PlayerService,
+                        PlaybackStateCompat.ACTION_PLAY_PAUSE
+                    )
+                )
+            )
+
+            // Take advantage of MediaStyle features
+            setStyle(androidx.media.app.NotificationCompat.MediaStyle()
+                .setMediaSession(mediaSession.sessionToken)
+                .setShowActionsInCompactView(0)
+
+                // Add a cancel button
+                .setShowCancelButton(true)
+                .setCancelButtonIntent(
+                    MediaButtonReceiver.buildMediaButtonPendingIntent(
+                        this@PlayerService,
+                        PlaybackStateCompat.ACTION_STOP
+                    )
+                )
+            )
+        }
+
+        // Display the notification and place the service in the foreground
+        startForeground(1, builder.build())
     }
 
-    override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
-        //super.onStartCommand();
-        //初始化media player
-        initEvent()
-        return START_STICKY
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun createNotificationChannel(channelId: String, channelName: String): String? {
+        val chan = NotificationChannel(
+            channelId,
+            channelName, NotificationManager.IMPORTANCE_NONE
+        )
+        chan.lightColor = Color.BLUE
+        chan.lockscreenVisibility = Notification.VISIBILITY_PRIVATE
+        val service = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+        service.createNotificationChannel(chan)
+        return channelId
+    }
+    override fun onGetRoot(
+        clientPackageName: String,
+        clientUid: Int,
+        rootHints: Bundle?
+    ): BrowserRoot? {
+        // (Optional) Control the level of access for the specified package name.
+        // You'll need to write your own logic to do this.
+        return if (allowBrowsing(clientPackageName, clientUid)) {
+            // Returns a root ID that clients can use with onLoadChildren() to retrieve
+            // the content hierarchy.
+            BrowserRoot(MY_MEDIA_ROOT_ID, null)
+        } else {
+            // Clients can connect, but this BrowserRoot is an empty hierachy
+            // so onLoadChildren returns nothing. This disables the ability to browse for content.
+            BrowserRoot(MY_EMPTY_MEDIA_ROOT_ID, null)
+        }
     }
 
-    private fun initEvent() {
-        //getList(PlayerService.this);
+    private fun allowBrowsing(clientPackageName: String, clientUid: Int): Boolean {
+        return true
     }
+
+    override fun onLoadChildren(
+        parentMediaId: String,
+        result: MediaBrowserServiceCompat.Result<List<MediaBrowserCompat.MediaItem>>
+    ) {
+        //  Browsing not allowed
+        if (MY_EMPTY_MEDIA_ROOT_ID == parentMediaId) {
+            result.sendResult(null)
+            return
+        }
+
+        // Assume for example that the music catalog is already loaded/cached.
+
+        val mediaItems = emptyList<MediaBrowserCompat.MediaItem>()
+
+        // Check if this is the root menu:
+        if (MY_MEDIA_ROOT_ID == parentMediaId) {
+            // Build the MediaItem objects for the top level,
+            // and put them in the mediaItems list...
+        } else {
+            // Examine the passed parentMediaId to see which submenu we're at,
+            // and put the children of that menu in the mediaItems list...
+        }
+        result.sendResult(mediaItems)
+    }
+
+
+
 
     fun getMyList(): ArrayList<MusicData?>? {
         return mList
@@ -156,26 +297,10 @@ class PlayerService : Service(), Config, MediaPlayer.OnPreparedListener {
         return mediaPlayer
     }
 
-    /**
-     * 添加观察者
-     * @param observer
-     */
-    fun addObserver(observer: Observer?) {
-        mObservable!!.addObserver(observer)
-    }
-
-    inner class MyObservable : Observable() {
-        fun notifyChanged(`object`: Any?) {
-            setChanged()
-            this.notifyObservers()
-        }
-    }
-
     companion object {
-        private const val TAG = "SmartPlay"
+        const val LOG_TAG = "SmartPlay"
         var PlayerState = 1
         var MediaPlayer_PLAY = 2
         var MediaPlayer_PAUSE = 1
-        const val LOG_TAG = "LOG_TAG"
     }
 }

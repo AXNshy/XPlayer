@@ -8,7 +8,7 @@ import androidx.viewbinding.ViewBinding
 /**
  * Created by axnshy on 16/8/9.
  */
-abstract class BaseActivity<T : ViewBinding,M:ViewModel> : AppCompatActivity() {
+abstract class BaseActivity<T : ViewBinding,M:ViewModel> : BasePlayerActivity() {
 
     lateinit var viewBinding : T
     abstract val viewModel : M
