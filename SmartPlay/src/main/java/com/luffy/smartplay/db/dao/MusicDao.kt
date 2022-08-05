@@ -13,6 +13,9 @@ interface MusicDao {
     @Update(onConflict = OnConflictStrategy.REPLACE)
     suspend fun addMusicData(musicData: MusicData)
 
+    @Update(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun addMusicData(musicData: List<MusicData>)
+
     @Delete
     suspend fun removeMusic(musicData: MusicData)
 
@@ -21,4 +24,7 @@ interface MusicDao {
 
     @Query("SELECT * FROM musics WHERE albumId=:albumId ORDER BY musicName DESC")
     fun queryMusicsFlowByAlbumId(albumId:String) : Flow<List<MusicData>>
+
+    @Query("SELECT * FROM musics ORDER BY musicName DESC")
+    fun queryLocalMusics() : List<MusicData>
 }

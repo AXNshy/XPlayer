@@ -34,13 +34,13 @@ import com.luffy.smartplay.R
             ).absolutePadding(top = Dp(10F), bottom = Dp(10F)), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center){
             ActionRepeat(mode = 0, onValueChanged = {},callback = callback!!::onRepeat)
             Spacer(modifier = Modifier.size(Dp(30F)))
-            ActionPrevious(callback = callback!!::onPrevious)
+            ActionPrevious(callback = callback::onPrevious)
             Spacer(modifier = Modifier.size(Dp(20F)))
-            ActionPlay(mode = 0, onValueChanged = {},callback = callback!!::onPlayOrPause)
+            ActionPlay(mode = 0, onValueChanged = {},callback = callback::onPlayOrPause)
             Spacer(modifier = Modifier.size(Dp(20F)))
-            ActionNext(callback = callback!!::onNext)
+            ActionNext(callback = callback::onNext)
             Spacer(modifier = Modifier.size(Dp(30F)))
-            ActionShuffle(mode = 0, onValueChanged = {},callback = callback!!::onShuffle)
+            ActionShuffle(mode = 0, onValueChanged = {},callback = callback::onShuffle)
         }
 
     }

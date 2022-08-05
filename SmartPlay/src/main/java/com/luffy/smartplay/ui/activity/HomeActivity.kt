@@ -5,16 +5,12 @@ import com.luffy.smartplay.R
 import com.luffy.smartplay.player.PlayerService
 import android.content.ComponentName
 import android.content.Intent
-import com.luffy.smartplay.ui.fragment.HomeFragment
+import com.luffy.smartplay.ui.fragment.MainFragment
 import androidx.core.view.GravityCompat
-import android.animation.ObjectAnimator
-import com.luffy.smartplay.ui.fragment.AlbunFragment
-import android.util.Log
 import android.view.*
 import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import com.luffy.smartplay.player.Service
 import com.luffy.smartplay.databinding.ActivityLaunchBinding
 import com.luffy.smartplay.db.repo.MusicRepository
 import com.luffy.smartplay.ui.base.BaseActivity
@@ -60,7 +56,7 @@ class HomeActivity : BaseActivity<ActivityLaunchBinding, HomeViewModel>(),
 //                R.string.drawer_close
 //            )
 //            drawerlayout.addDrawerListener(mDrawerToggle)
-            val home = HomeFragment()
+            val home = MainFragment()
             supportFragmentManager.beginTransaction().replace(R.id.id_home_container, home).commit()
             viewBinding.composeContainer.setContent {
                 PlaybackControllerUI(object : PlaybackControllerCallback{

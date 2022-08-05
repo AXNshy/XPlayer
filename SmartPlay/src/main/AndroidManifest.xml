@@ -42,9 +42,11 @@
         </activity>
         <service android:name=".player.PlayerService"
             android:exported="true">
+            <intent-filter>
+                <action android:name="android.media.browse.MediaBrowserService" />
+            </intent-filter>
             <intent-filter >
                 <action android:name="com.axnshy.action.PlayerService"/>
-
             </intent-filter>
         </service>
         <receiver android:name=".RemoteControlReceiver"

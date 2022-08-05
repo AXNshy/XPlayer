@@ -3,10 +3,13 @@ package com.luffy.smartplay.player
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.content.Intent
 import android.graphics.Color
 import android.media.MediaPlayer
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.ResultReceiver
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
@@ -19,6 +22,7 @@ import com.luffy.player.PlayerBase
 import com.luffy.smartplay.Config
 import com.luffy.smartplay.R
 import com.luffy.smartplay.db.bean.MusicData
+import com.luffy.smartplay.utils.Logger
 import java.io.IOException
 import java.util.*
 
@@ -69,7 +73,7 @@ class PlayerService : MediaBrowserServiceCompat(), Config, MediaPlayer.OnPrepare
             setPlaybackState(stateBuilder.build())
 
             // MySessionCallback() has methods that handle callbacks from a media controller
-//            setCallback()
+            setCallback(mCallback)
 
             // Set the session's token so that client activities can communicate with it.
             setSessionToken(sessionToken)
@@ -145,6 +149,23 @@ class PlayerService : MediaBrowserServiceCompat(), Config, MediaPlayer.OnPrepare
 
         // Display the notification and place the service in the foreground
         startForeground(1, builder.build())
+    }
+
+    private val mCallback : MediaSessionCompat.Callback = object : MediaSessionCompat.Callback() {
+        override fun onCommand(command: String?, extras: Bundle?, cb: ResultReceiver?) {
+            super.onCommand(command, extras, cb)
+            Logger.d(LOG_TAG,"onCommand $command")
+        }
+
+        override fun onMediaButtonEvent(mediaButtonEvent: Intent?): Boolean {
+            Logger.d(LOG_TAG,"onMediaButtonEvent $mediaButtonEvent")
+            return super.onMediaButtonEvent(mediaButtonEvent)
+        }
+
+        override fun onPrepareFromUri(uri: Uri?, extras: Bundle?) {
+            super.onPrepareFromUri(uri, extras)
+            Logger.d(LOG_TAG,"onPrepareFromUri $uri")
+        }
     }
 
 

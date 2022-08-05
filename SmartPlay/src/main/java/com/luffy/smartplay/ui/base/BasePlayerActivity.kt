@@ -17,7 +17,6 @@ abstract class BasePlayerActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        // ...
         // Create MediaBrowserServiceCompat
         mediaBrowser = MediaBrowserCompat(
             this,
@@ -51,7 +50,7 @@ abstract class BasePlayerActivity : AppCompatActivity() {
             mediaBrowser.sessionToken.also { token ->
 
                 // Create a MediaControllerCompat
-                val mediaController = MediaControllerCompat(
+                mediaController = MediaControllerCompat(
                     this@BasePlayerActivity, // Context
                     token
                 )

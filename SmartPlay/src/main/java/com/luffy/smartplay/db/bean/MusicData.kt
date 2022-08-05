@@ -12,8 +12,9 @@ class MusicData(
      * 数据库中的_id
      */
     @PrimaryKey(autoGenerate = true)
-    var Id:Long,
+    var Id:Long = 0,
     var musicId :Int= -1,
+    var album :String="",
     var albumId :String="",
     var duration :Long= 0,
     var musicName: String? = null,

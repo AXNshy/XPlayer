@@ -1,15 +1,9 @@
 package com.luffy.smartplay.utils
 
-import android.content.Context
 import android.util.Log
 
 object Logger {
-    var TAG_PREFIX : String = "SmartPlay"
-
-
-    fun init(context: Context){
-    }
-
+    private var TAG_PREFIX : String = "SmartPlay"
 
     private fun tag(tag: String) :String{
         return "$TAG_PREFIX-$tag"
