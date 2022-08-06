@@ -15,6 +15,7 @@ import com.luffy.smartplay.R
 import com.luffy.smartplay.databinding.ListFragmentBinding
 import com.luffy.smartplay.ui.base.BaseFragment
 import com.luffy.smartplay.ui.viewmodel.AlbumFragmentViewModel
+import com.luffy.smartplay.ui.viewmodel.ArtWorkViewModel
 import java.util.ArrayList
 
 /**
@@ -27,17 +28,6 @@ class AlbunFragment : BaseFragment<ListFragmentBinding, AlbumFragmentViewModel>(
     private var ListsList: List<AlbumData>? = null
     private var listPositon = 0
     var mListener: OnItemClickListener? = null
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        viewModel = ViewModelProvider(this)[AlbumFragmentViewModel::class.java]
-        viewBinding = ListFragmentBinding.inflate(layoutInflater, container, false)
-
-        return viewBinding.root
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -89,4 +79,14 @@ class AlbunFragment : BaseFragment<ListFragmentBinding, AlbumFragmentViewModel>(
     interface OnItemClickListener {
         fun updateToolbar(string: String?)
     }
+
+    override fun bindViewBinding(
+        inflater: LayoutInflater,
+        container: ViewGroup?
+    ): ListFragmentBinding {
+        return ListFragmentBinding.inflate(inflater,container,false)
+    }
+
+
+    override val viewModel: AlbumFragmentViewModel by lazy{ViewModelProvider(this)[AlbumFragmentViewModel::class.java]}
 }

@@ -52,4 +52,9 @@
     <string name="select_picture_from_photolib">从图库中选择背景</string>
     <string name="pause">暂停</string>
 
+    <string name="music_filter_music">歌曲</string>
+    <string name="music_filter_singer">歌手</string>
+    <string name="music_filter_album">专辑</string>
+    <string name="music_filter_folder">文件夹</string>
+
 </resources>

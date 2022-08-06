@@ -27,4 +27,7 @@ interface MusicDao {
 
     @Query("SELECT * FROM musics ORDER BY musicName DESC")
     fun queryLocalMusics() : List<MusicData>
+
+    @Query("SELECT * FROM musics ORDER BY musicName DESC")
+    fun queryLocalMusicsFlow() : Flow<List<MusicData>>
 }

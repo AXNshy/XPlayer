@@ -1,14 +1,17 @@
 package com.luffy.smartplay.db.repo
 
-import android.content.ContentValues
 import android.provider.MediaStore
 import com.luffy.smartplay.db.MyDatabase
 import com.luffy.smartplay.db.bean.MusicData
 import com.luffy.smartplay.db.dao.MusicDao
 import com.luffy.smartplay.ui.MyApp
+import com.luffy.smartplay.utils.Logger
 import kotlinx.coroutines.flow.Flow
 
 object MusicRepository {
+
+    const val TAG = "MusicRepository"
+
     val dao : MusicDao by lazy { MyDatabase.getInstance().musicDao() }
 
 
@@ -31,6 +34,9 @@ object MusicRepository {
     }
 
 
+    suspend fun queryLocalMusicsFlow() : Flow<List<MusicData>>{
+        return dao.queryLocalMusicsFlow()
+    }
     suspend fun queryLocalMusics() : List<MusicData>{
         return dao.queryLocalMusics()
     }
@@ -38,9 +44,15 @@ object MusicRepository {
 
 
     suspend fun scanMusic(){
-        val queryUri = MediaStore.Audio.Media.getContentUri(MediaStore.VOLUME_EXTERNAL)
+//        val uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
+        val selection = MediaStore.Audio.Media.IS_MUSIC + "!= 0"
+        val queryUri = MediaStore.Audio.Media.getContentUri(MediaStore.VOLUME_INTERNAL)
         val set = mutableListOf<MusicData>()
-        MyApp.context.contentResolver.query(queryUri,null,null,null,null)?.use {
+        MyApp.context.contentResolver.query(queryUri,null,selection,null,null)?.use {
+            if(it.count == 0){
+                Logger.d(TAG,"scanMusic fail, MediaStore data is empty")
+                return
+            }
             do {
                 val data = MusicData().apply {
                     data =
@@ -62,7 +74,7 @@ object MusicRepository {
                         it.getLong(it.getColumnIndexOrThrow(MediaStore.Audio.Media.SIZE))
 
                     publish =
-                        it.getString(it.getColumnIndexOrThrow(MediaStore.Audio.Media.YEAR))
+                        it.getLong(it.getColumnIndexOrThrow(MediaStore.Audio.Media.YEAR))
 
                 }
                 set.add(data)

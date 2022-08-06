@@ -17,15 +17,15 @@ class MusicData(
     var album :String="",
     var albumId :String="",
     var duration :Long= 0,
-    var musicName: String? = null,
-    var artist: String? = null,
-    var data: String? = null,
+    var musicName: String = "",
+    var artist: String = "",
+    var data: String = "",
 
     //歌曲文件名称
-    var displayName: String? = null,
+    var displayName: String = "",
 
     //发布日期
-    var publish: String? = null,
+    var publish: Long = 0,
 
     //文件大小
     var size :Long= 0,

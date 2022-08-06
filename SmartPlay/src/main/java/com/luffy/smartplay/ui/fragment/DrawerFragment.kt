@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.luffy.smartplay.db.bean.User
 import com.luffy.smartplay.databinding.HomeDrawerBinding
 import com.luffy.smartplay.ui.base.BaseFragment
+import com.luffy.smartplay.ui.viewmodel.ArtWorkViewModel
 import com.luffy.smartplay.ui.viewmodel.HomeDrawerViewModel
 import java.util.ArrayList
 
@@ -39,16 +40,6 @@ class DrawerFragment : BaseFragment<HomeDrawerBinding,HomeDrawerViewModel>(), Ad
         initDrawer()
         initList()
         setView()
-    }
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        viewModel = ViewModelProvider(this)[HomeDrawerViewModel::class.java]
-        viewBinding = HomeDrawerBinding.inflate(layoutInflater, container, false)
-        return HomeDrawerBinding.inflate(inflater,container,false).root
     }
 
     private fun initDrawer() {
@@ -92,4 +83,13 @@ class DrawerFragment : BaseFragment<HomeDrawerBinding,HomeDrawerViewModel>(), Ad
             }
         }
     }
+
+    override fun bindViewBinding(
+        inflater: LayoutInflater,
+        container: ViewGroup?
+    ): HomeDrawerBinding {
+      return  HomeDrawerBinding.inflate(inflater,container,false)
+    }
+
+    override val viewModel: HomeDrawerViewModel by lazy{ViewModelProvider(this)[HomeDrawerViewModel::class.java]}
 }

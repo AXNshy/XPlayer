@@ -37,9 +37,9 @@
      <!--   <activity android:name="com.luffy.android.smartplay.Activity.RegisterActivity">
 
         </activity>-->
-        <activity android:name=".ui.activity.MusicPlayingActivity">
+        <activity android:name=".ui.activity.MusicPlayingActivity"/>
+        <activity android:name=".ui.activity.MusicFilterActivity"/>
 
-        </activity>
         <service android:name=".player.PlayerService"
             android:exported="true">
             <intent-filter>

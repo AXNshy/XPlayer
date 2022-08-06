@@ -33,12 +33,11 @@ class HomeActivity : BaseActivity<ActivityLaunchBinding, HomeViewModel>(),
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
         if (!AccountUtils.isUserExit(this)) {
             val intent = Intent(this@HomeActivity, LoginActivity::class.java)
             startActivity(intent)
         }
-        setContentView(viewBinding.root)
+        super.onCreate(savedInstanceState)
         initView()
     }
 
@@ -56,8 +55,7 @@ class HomeActivity : BaseActivity<ActivityLaunchBinding, HomeViewModel>(),
 //                R.string.drawer_close
 //            )
 //            drawerlayout.addDrawerListener(mDrawerToggle)
-            val home = MainFragment()
-            supportFragmentManager.beginTransaction().replace(R.id.id_home_container, home).commit()
+            supportFragmentManager.beginTransaction().replace(R.id.id_home_container, MainFragment()).commit()
             viewBinding.composeContainer.setContent {
                 PlaybackControllerUI(object : PlaybackControllerCallback{
                     override fun onRepeat(value: Int) {
