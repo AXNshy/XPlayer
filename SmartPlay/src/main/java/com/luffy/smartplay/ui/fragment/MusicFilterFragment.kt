@@ -1,5 +1,6 @@
 package com.luffy.smartplay.ui.fragment
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -9,10 +10,11 @@ import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -26,7 +28,6 @@ import com.luffy.smartplay.ui.viewmodel.BaseViewModel
 import com.luffy.smartplay.ui.viewmodel.UIState
 import com.luffy.smartplay.utils.Logger
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 class MusicFilterFragment: BaseComposeFragment<MusicFilterFragment.MusicFilterFragmentViewModel>() {
@@ -36,11 +37,11 @@ class MusicFilterFragment: BaseComposeFragment<MusicFilterFragment.MusicFilterFr
     class MusicFilterFragmentViewModel :BaseViewModel<MusicFilterUIState>() {
 
         init {
-            viewModelScope.launch(Dispatchers.IO) {
-                MusicRepository.queryLocalMusicsFlow().collect{
+            viewModelScope.launch {
+                MusicRepository.queryLocalMusicsFlow().collect {
 
-                    Logger.d(TAG,"queryLocalMusicsFlow $it")
-                    _state.value = _state.value.copy(list = it)
+                    Logger.d(TAG, "queryLocalMusicsFlow $it")
+                    _state.emit(_state.value.copy(list = it))
                 }
             }
         }
@@ -50,8 +51,8 @@ class MusicFilterFragment: BaseComposeFragment<MusicFilterFragment.MusicFilterFr
         }
 
         fun scanMusic() {
-            Logger.d(TAG,"scanMusic")
-            viewModelScope.launch {
+            Logger.d(TAG, "scanMusic")
+            viewModelScope.launch(Dispatchers.IO) {
                 MusicRepository.scanMusic()
             }
         }
@@ -69,20 +70,21 @@ class MusicFilterFragment: BaseComposeFragment<MusicFilterFragment.MusicFilterFr
 
     @Preview
     @Composable
-    fun MusicFilterContent(){
-        val state = viewModel.state.collectAsState()
+    fun MusicFilterContent(viewModel: MusicFilterFragmentViewModel = androidx.lifecycle.viewmodel.compose.viewModel()) {
+        val state by viewModel.state.collectAsState()
         Column(modifier = Modifier.padding(10.dp)) {
-            if(state.value.list.isEmpty()){
+            Logger.d(TAG, "MusicFilterContent")
+            if (state.list.isEmpty()) {
                 Row(modifier = Modifier.padding(8.dp)) {
                     Button(onClick = { viewModel.scanMusic() }) {
                         Text(text = "扫描本地文件")
                     }
                 }
-            }else{
+            } else {
 
             }
-            LazyColumn{
-                items(state.value.list){ item->
+            LazyColumn {
+                items(state.list) { item ->
                     MusicItemContent(data = item)
                 }
             }
@@ -91,20 +93,38 @@ class MusicFilterFragment: BaseComposeFragment<MusicFilterFragment.MusicFilterFr
     }
 
     @Composable
-    fun MusicItemContent(data: MusicData){
-        Row (modifier = Modifier
-            .height(120.dp)
-            .fillMaxWidth(1f)){
+    fun MusicItemContent(data: MusicData) {
+
+        Logger.d(TAG, "MusicItemContent $data")
+        Row(
+            modifier = Modifier
+                .height(60.dp)
+                .fillMaxWidth(1f)
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.appicon),
+                contentDescription = "",
+                modifier = Modifier.size(40.dp)
+            )
             Column(modifier = Modifier.fillMaxWidth(1F)) {
-                Text(text = data.displayName.ifBlank { data.musicName })
+                Text(text = data.title.ifBlank { data.displayName })
                 Row {
-                    Text(text = "SQ", modifier = Modifier
-                        .background(Color(0xf9dddc))
-                        .padding(2.dp), color = Color(0xd6251f))
-                    Text(text = "${data.artist} ${data.album}")
+                    Text(
+                        text = "SQ", modifier = Modifier
+                            .background(Color(0xf9dddc))
+                            .padding(2.dp), color = Color(0xd6251f)
+                    )
+                    Text(
+                        text = "${data.artist} ${data.album}",
+                        color = colorResource(id = R.color.black)
+                    )
                 }
             }
-            Icon(painter = painterResource(id = R.drawable.round_more_horiz_black_48), contentDescription = "")
+            Text(text = data.getMusicTimeTotal(), color = colorResource(id = R.color.black))
+            Icon(
+                painter = painterResource(id = R.drawable.round_more_horiz_black_48),
+                contentDescription = ""
+            )
         }
     }
 

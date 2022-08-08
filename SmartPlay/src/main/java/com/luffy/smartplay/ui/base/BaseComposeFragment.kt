@@ -7,13 +7,10 @@ import android.view.ViewGroup
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
-import androidx.viewbinding.ViewBinding
 
 abstract class BaseComposeFragment <M: ViewModel> : Fragment() {
 
-    companion object{
-        val TAG : String = javaClass.simpleName
-    }
+    val TAG: String = javaClass.simpleName
 
     abstract val viewModel: M
 

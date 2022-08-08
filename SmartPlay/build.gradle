@@ -9,7 +9,7 @@ android {
 
     defaultConfig {
         applicationId "com.luffy.smartMusic"
-        minSdkVersion 30
+        minSdkVersion 29
         targetSdkVersion 32
         versionCode 1
         versionName "1.0"
@@ -20,6 +20,9 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+        debug{
+            minifyEnabled false
         }
     }
 

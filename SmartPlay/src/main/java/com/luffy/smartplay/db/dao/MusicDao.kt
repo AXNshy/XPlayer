@@ -3,31 +3,31 @@
  */
 package com.luffy.smartplay.db.dao
 
-import com.luffy.smartplay.db.bean.MusicData
 import androidx.room.*
+import com.luffy.smartplay.db.bean.MusicData
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface MusicDao {
 
-    @Update(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun addMusicData(musicData: MusicData)
 
-    @Update(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun addMusicData(musicData: List<MusicData>)
 
     @Delete
     suspend fun removeMusic(musicData: MusicData)
 
-    @Query("SELECT * FROM musics WHERE albumId=:albumId ORDER BY musicName DESC")
+    @Query("SELECT * FROM musics WHERE albumId=:albumId ORDER BY title DESC")
     suspend fun queryMusicsByAlbumId(albumId:String) : List<MusicData>
 
-    @Query("SELECT * FROM musics WHERE albumId=:albumId ORDER BY musicName DESC")
+    @Query("SELECT * FROM musics WHERE albumId=:albumId ORDER BY title DESC")
     fun queryMusicsFlowByAlbumId(albumId:String) : Flow<List<MusicData>>
 
-    @Query("SELECT * FROM musics ORDER BY musicName DESC")
+    @Query("SELECT * FROM musics ORDER BY title DESC")
     fun queryLocalMusics() : List<MusicData>
 
-    @Query("SELECT * FROM musics ORDER BY musicName DESC")
+    @Query("SELECT * FROM musics ORDER BY title DESC")
     fun queryLocalMusicsFlow() : Flow<List<MusicData>>
 }

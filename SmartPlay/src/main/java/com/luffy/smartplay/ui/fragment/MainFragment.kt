@@ -16,11 +16,13 @@ import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.*
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -35,6 +37,7 @@ import com.luffy.smartplay.db.repo.MusicRepository
 import com.luffy.smartplay.ui.activity.MusicFilterActivity
 import com.luffy.smartplay.ui.base.BaseFragment
 import com.luffy.smartplay.ui.viewmodel.MainFragmentViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -68,7 +71,8 @@ class MainFragment : BaseFragment<FragmentMainBinding, MainFragmentViewModel>() 
         Column(
             modifier = Modifier
                 .wrapContentHeight(align = Alignment.Top)
-                .wrapContentWidth().background(Color(0xfff8f8ff)),
+                .wrapContentWidth()
+                .background(Color(0xfff8f8ff)),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Top
         ) {
@@ -88,7 +92,7 @@ class MainFragment : BaseFragment<FragmentMainBinding, MainFragmentViewModel>() 
                 ImageWithTitle(R.drawable.round_add_black_36, "添加歌曲")
                 ImageWithTitle(R.drawable.round_add_black_36, "添加歌单")
                 ImageWithTitle(R.drawable.round_add_black_36, "本地扫描", click = {
-                    lifecycleScope.launch {
+                    lifecycleScope.launch(Dispatchers.IO) {
                         MusicRepository.scanMusic()
                     }
                 })
@@ -106,9 +110,11 @@ class MainFragment : BaseFragment<FragmentMainBinding, MainFragmentViewModel>() 
     @Composable
     fun ImageWithTitle(id: Int, title: String,click : () -> Any? = { }) {
         Column(
-            modifier = Modifier.size(Dp(80F), Dp(100F)).clickable {
-                click.invoke()
-            },
+            modifier = Modifier
+                .size(Dp(80F), Dp(100F))
+                .clickable {
+                    click.invoke()
+                },
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {

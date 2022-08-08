@@ -3,8 +3,8 @@ package com.luffy.smartplay.ui.adapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.luffy.smartplay.db.bean.MusicData
 import com.luffy.smartplay.databinding.CustomListItemBinding
+import com.luffy.smartplay.db.bean.MusicData
 import com.luffy.smartplay.ui.base.BaseBindingAdapter
 import com.luffy.smartplay.ui.base.BindingViewHolder
 
@@ -18,7 +18,7 @@ class MusicListAdapter(val list: List<MusicData> = mutableListOf()) :
     override fun onBindViewHolder(holder: BindingViewHolder<CustomListItemBinding>, position: Int) {
         super.onBindViewHolder(holder, position)
         holder.holder.apply {
-            idMusicName.text = list[position].musicName
+            idMusicName.text = list[position].title
                 idMusicArtist.setText(list[position].artist)
             ivPlayIndicator.visibility = View.INVISIBLE
             ivItemMenu.setOnClickListener { menuListener?.showItemMenu(list[position]) }
