@@ -8,7 +8,9 @@ import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import androidx.appcompat.app.AppCompatActivity
-import com.luffy.smartplay.player.PlayerService
+import androidx.core.net.toUri
+import com.luffy.smartplay.db.bean.MusicData
+import com.luffy.smartplay.player.PlaybackService
 
 abstract class BasePlayerActivity : AppCompatActivity() {
 
@@ -20,7 +22,7 @@ abstract class BasePlayerActivity : AppCompatActivity() {
         // Create MediaBrowserServiceCompat
         mediaBrowser = MediaBrowserCompat(
             this,
-            ComponentName(this, PlayerService::class.java),
+            ComponentName(this, PlaybackService::class.java),
             connectionCallbacks,
             null // optional Bundle
         )
@@ -78,13 +80,17 @@ abstract class BasePlayerActivity : AppCompatActivity() {
         override fun onPlaybackStateChanged(state: PlaybackStateCompat?) {}
     }
 
-    fun playOrPause(){
+    fun playOrPause() {
         val pbState = mediaController.playbackState?.state
         if (pbState == PlaybackStateCompat.STATE_PLAYING) {
             mediaController.transportControls.pause()
         } else {
             mediaController.transportControls.play()
         }
+    }
+
+    fun setMusicData(data: MusicData) {
+        mediaController.transportControls.playFromUri(data.data.toUri(), null)
     }
 
     fun buildTransportControls() {

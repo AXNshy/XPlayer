@@ -15,7 +15,7 @@ import androidx.lifecycle.lifecycleScope
 import com.luffy.smartplay.R
 import com.luffy.smartplay.databinding.ActivityLaunchBinding
 import com.luffy.smartplay.db.repo.MusicRepository
-import com.luffy.smartplay.player.PlayerService
+import com.luffy.smartplay.player.PlaybackService
 import com.luffy.smartplay.ui.base.BaseActivity
 import com.luffy.smartplay.ui.fragment.MainFragment
 import com.luffy.smartplay.ui.viewmodel.HomeViewModel
@@ -174,7 +174,7 @@ class HomeActivity : BaseActivity<ActivityLaunchBinding, HomeViewModel>(),
 
     private fun updateUI() {
         //PlayerState代表播放状态
-        if (PlayerBarToken == true && PlayerService.Companion.PlayerState == PlayerService.Companion.MediaPlayer_PAUSE) {
+        if (PlayerBarToken == true && PlaybackService.Companion.PlayerState == PlaybackService.Companion.MediaPlayer_PAUSE) {
 
             PlayerBarToken = false
         }

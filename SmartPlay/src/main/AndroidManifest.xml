@@ -40,13 +40,14 @@
         <activity android:name=".ui.activity.MusicPlayingActivity"/>
         <activity android:name=".ui.activity.MusicFilterActivity"/>
 
-        <service android:name=".player.PlayerService"
+        <service
+            android:name=".player.PlaybackService"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.media.browse.MediaBrowserService" />
             </intent-filter>
-            <intent-filter >
-                <action android:name="com.axnshy.action.PlayerService"/>
+            <intent-filter>
+                <action android:name="com.axnshy.action.PlayerService" />
             </intent-filter>
         </service>
         <receiver android:name=".RemoteControlReceiver"

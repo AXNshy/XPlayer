@@ -1,11 +1,12 @@
 package com.luffy.player
 
-import android.net.Uri
+import android.media.browse.MediaBrowser
 
 interface PlayerBase {
-    fun setMediaSource(uri : Uri)
+    fun setMediaItem(item: MediaBrowser.MediaItem)
     fun prepare()
     fun start()
     fun pause()
     fun stop()
+    fun setPlaybackStateCallback()
 }

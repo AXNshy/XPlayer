@@ -2,6 +2,7 @@ package com.luffy.smartplay.ui.fragment
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -24,6 +25,7 @@ import com.luffy.smartplay.R
 import com.luffy.smartplay.db.bean.MusicData
 import com.luffy.smartplay.db.repo.MusicRepository
 import com.luffy.smartplay.ui.base.BaseComposeFragment
+import com.luffy.smartplay.ui.base.BasePlayerActivity
 import com.luffy.smartplay.ui.viewmodel.BaseViewModel
 import com.luffy.smartplay.ui.viewmodel.UIState
 import com.luffy.smartplay.utils.Logger
@@ -100,6 +102,9 @@ class MusicFilterFragment: BaseComposeFragment<MusicFilterFragment.MusicFilterFr
             modifier = Modifier
                 .height(60.dp)
                 .fillMaxWidth(1f)
+                .clickable {
+                    startPlayMusicData(data)
+                }
         ) {
             Image(
                 painter = painterResource(id = R.drawable.appicon),
@@ -128,4 +133,11 @@ class MusicFilterFragment: BaseComposeFragment<MusicFilterFragment.MusicFilterFr
         }
     }
 
+
+    fun startPlayMusicData(data: MusicData) {
+        val activity = requireActivity()
+        if (activity is BasePlayerActivity) {
+            activity.setMusicData(data)
+        }
+    }
 }

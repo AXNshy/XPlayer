@@ -6,6 +6,7 @@ import android.app.NotificationManager
 import android.content.Intent
 import android.graphics.Color
 import android.media.MediaPlayer
+import android.media.browse.MediaBrowser
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -18,21 +19,19 @@ import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import androidx.media.MediaBrowserServiceCompat
 import androidx.media.session.MediaButtonReceiver
-import com.luffy.player.PlayerBase
+import com.luffy.player.MusicPlayer
 import com.luffy.smartplay.Config
 import com.luffy.smartplay.R
 import com.luffy.smartplay.db.bean.MusicData
 import com.luffy.smartplay.utils.Logger
-import java.io.IOException
-import java.util.*
 
 /**
  * Created by axnshy on 16/4/19.
  */
-class PlayerService : MediaBrowserServiceCompat(), Config, MediaPlayer.OnPreparedListener {
+class PlaybackService : MediaBrowserServiceCompat(), Config, MediaPlayer.OnPreparedListener {
     var repeatTag = 0
     var shuffleTag = 0
-    private var mList: ArrayList<MusicData?>? = null
+    private var mediaItems: List<MediaBrowser.MediaItem?>? = null
 
     /*
         * 当前播放资源的绝对路径
@@ -44,7 +43,7 @@ class PlayerService : MediaBrowserServiceCompat(), Config, MediaPlayer.OnPrepare
     *
     * */
     var currentMusic: MusicData? = null
-    private var mPlayer: PlayerBase? = null
+    private var mPlayer: MusicPlayer? = null
 
     override fun onPrepared(mp: MediaPlayer) {}
 
@@ -58,16 +57,20 @@ class PlayerService : MediaBrowserServiceCompat(), Config, MediaPlayer.OnPrepare
     override fun onCreate() {
         super.onCreate()
         // Create a MediaSessionCompat
+        mPlayer = MusicPlayer(applicationContext)
+        mPlayer?.initializePlayer()
         mediaSession = MediaSessionCompat(this, LOG_TAG).apply {
 
             // Enable callbacks from MediaButtons and TransportControls
-            setFlags(MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS
-                    or MediaSessionCompat.FLAG_HANDLES_TRANSPORT_CONTROLS
+            setFlags(
+                MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS
+                        or MediaSessionCompat.FLAG_HANDLES_TRANSPORT_CONTROLS
             )
 
             // Set an initial PlaybackState with ACTION_PLAY, so media buttons can start the player
             stateBuilder = PlaybackStateCompat.Builder()
-                .setActions(PlaybackStateCompat.ACTION_PLAY
+                .setActions(
+                    PlaybackStateCompat.ACTION_PLAY
                         or PlaybackStateCompat.ACTION_PLAY_PAUSE
                 )
             setPlaybackState(stateBuilder.build())
@@ -88,7 +91,7 @@ class PlayerService : MediaBrowserServiceCompat(), Config, MediaPlayer.OnPrepare
         val description = mediaMetadata?.description
 
         val channelId = if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
-            createNotificationChannel(packageName,PlayerService.javaClass.name)
+            createNotificationChannel(packageName, PlaybackService.javaClass.name)
         }else {
             ""
         }
@@ -106,7 +109,7 @@ class PlayerService : MediaBrowserServiceCompat(), Config, MediaPlayer.OnPrepare
             // Stop the service when the notification is swiped away
             setDeleteIntent(
                 MediaButtonReceiver.buildMediaButtonPendingIntent(
-                    this@PlayerService,
+                    this@PlaybackService,
                     PlaybackStateCompat.ACTION_STOP
                 )
             )
@@ -117,7 +120,7 @@ class PlayerService : MediaBrowserServiceCompat(), Config, MediaPlayer.OnPrepare
             // Add an app icon and set its accent color
             // Be careful about the color
             setSmallIcon(R.drawable.appicon)
-            color = ContextCompat.getColor(this@PlayerService, R.color.colorPrimary)
+            color = ContextCompat.getColor(this@PlaybackService, R.color.colorPrimary)
 
             // Add a pause button
             addAction(
@@ -125,7 +128,7 @@ class PlayerService : MediaBrowserServiceCompat(), Config, MediaPlayer.OnPrepare
                     R.drawable.pause,
                     getString(R.string.pause),
                     MediaButtonReceiver.buildMediaButtonPendingIntent(
-                        this@PlayerService,
+                        this@PlaybackService,
                         PlaybackStateCompat.ACTION_PLAY_PAUSE
                     )
                 )
@@ -140,7 +143,7 @@ class PlayerService : MediaBrowserServiceCompat(), Config, MediaPlayer.OnPrepare
                 .setShowCancelButton(true)
                 .setCancelButtonIntent(
                     MediaButtonReceiver.buildMediaButtonPendingIntent(
-                        this@PlayerService,
+                        this@PlaybackService,
                         PlaybackStateCompat.ACTION_STOP
                     )
                 )
@@ -158,13 +161,24 @@ class PlayerService : MediaBrowserServiceCompat(), Config, MediaPlayer.OnPrepare
         }
 
         override fun onMediaButtonEvent(mediaButtonEvent: Intent?): Boolean {
-            Logger.d(LOG_TAG,"onMediaButtonEvent $mediaButtonEvent")
+            Logger.d(LOG_TAG, "onMediaButtonEvent $mediaButtonEvent")
             return super.onMediaButtonEvent(mediaButtonEvent)
         }
 
         override fun onPrepareFromUri(uri: Uri?, extras: Bundle?) {
             super.onPrepareFromUri(uri, extras)
-            Logger.d(LOG_TAG,"onPrepareFromUri $uri")
+            Logger.d(LOG_TAG, "onPrepareFromUri $uri")
+            if (uri != null) {
+                mPlayer!!.setMediaData(uri.path!!)
+            }
+        }
+
+        override fun onPlayFromUri(uri: Uri?, extras: Bundle?) {
+            super.onPlayFromUri(uri, extras)
+            Logger.d(LOG_TAG, "onPlayFromUri $uri")
+            if (uri != null) {
+                mPlayer!!.setMediaData(uri.path!!)
+            }
         }
     }
 
@@ -228,98 +242,8 @@ class PlayerService : MediaBrowserServiceCompat(), Config, MediaPlayer.OnPrepare
         result.sendResult(mediaItems)
     }
 
-
-
-
-    fun getMyList(): ArrayList<MusicData?>? {
-        return mList
-    }
-
-    fun getPreviousMusic(): MusicData? {
-        val location = getMyList()!!.indexOf(currentMusic)
-        return if (location == 0) {
-            getMyList()!![getMyList()!!.size - 1]
-        } else getMyList()!![location - 1]
-    }
-
-    fun getNextMusic(): MusicData? {
-        val location = getMyList()!!.indexOf(currentMusic)
-        return if (location == getMyList()!!.size - 1) {
-            getMyList()!![0]
-        } else getMyList()!![location + 1]
-    }
-
-    fun getPlayerState(): Int {
-        return if (PlayerState > 0) PlayerState else -1
-    }
-
-    fun setPlayerState(state: Int) {
-        PlayerState = state
-    }
-
-    fun setPlayerList(list: ArrayList<MusicData?>?) {
-        mList = list
-        currentMusic = mList!![0]
-    }
-
-    fun play(music: MusicData?) {
-        try {
-            mPlayer?.start()
-            currentMusic = music
-            PlayerState = MediaPlayer_PLAY
-        } catch (e: IOException) {
-            e.printStackTrace()
-        }
-    }
-
-    fun pause() {
-//        getPlayerInstance().pause()
-        //handler.sendMessage(handler.obtainMessage(0, currentMusic));
-    }
-
-    private fun openPlayer(){
-
-    }
-
-    private fun initPlayer(player: MediaPlayer){
-        player.reset()
-        if (repeatTag == 0)  player.isLooping = false
-        if (repeatTag == 1)  player.isLooping = true
-    }
-
-    private fun createMediaPlayer(): MediaPlayer {
-        val mediaPlayer = MediaPlayer()
-        mediaPlayer.setOnCompletionListener(object : MediaPlayer.OnCompletionListener {
-            override fun onCompletion(mp: MediaPlayer) {
-                try {
-                    currentMusic = if (shuffleTag == 0) {
-                        val music: MusicData? = mList!![mList!!.indexOf(currentMusic) + 1]
-                        mp.reset()
-                        mp.setDataSource(music?.data)
-                        mp.prepare()
-                        mp.start()
-                        music
-                    } else {
-                        val double1 = Math.random()
-                        val random = (double1 * mList!!.size).toInt()
-                        val music: MusicData? = mList!![random]
-                        mp.reset()
-                        mp.setDataSource(music?.data)
-                        mp.prepare()
-                        mp.start()
-                        music
-                    }
-                    PlayerState = MediaPlayer_PLAY
-                } catch (e: IOException) {
-                    e.printStackTrace()
-                }
-            }
-        })
-        return mediaPlayer
-    }
-
     companion object {
-        const val LOG_TAG = "SmartPlay"
+        const val LOG_TAG = "PlaybackService"
         var PlayerState = 1
         var MediaPlayer_PLAY = 2
         var MediaPlayer_PAUSE = 1
