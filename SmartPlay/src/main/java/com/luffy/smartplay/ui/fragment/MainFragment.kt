@@ -38,8 +38,6 @@ import com.luffy.smartplay.ui.activity.MusicFilterActivity
 import com.luffy.smartplay.ui.base.BaseFragment
 import com.luffy.smartplay.ui.viewmodel.MainFragmentViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 /**
@@ -56,18 +54,14 @@ class MainFragment : BaseFragment<FragmentMainBinding, MainFragmentViewModel>() 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewBinding.composeContainer.setContent {
-            HomeFragmentContent(viewModel.state)
+            HomeFragmentContent()
         }
     }
 
     @Preview
     @Composable
-    fun HomeFragmentContent(
-        state: StateFlow<MainFragmentViewModel.MainFragmentState> = MutableStateFlow(
-            MainFragmentViewModel.MainFragmentState()
-        )
-    ) {
-        val _state = state.collectAsState()
+    fun HomeFragmentContent(viewModel: MainFragmentViewModel = androidx.lifecycle.viewmodel.compose.viewModel()) {
+        val _state = viewModel.state.collectAsState()
         Column(
             modifier = Modifier
                 .wrapContentHeight(align = Alignment.Top)
@@ -100,7 +94,7 @@ class MainFragment : BaseFragment<FragmentMainBinding, MainFragmentViewModel>() 
 
             FavoriteRow(_state.value.favoriteMusicSize, _state.value.favoriteBoxBg)
             LazyColumn {
-                items(state.value.albumList) { album ->
+                items(_state.value.albumList) { album ->
                     AlbumRow(album)
                 }
             }
@@ -108,7 +102,7 @@ class MainFragment : BaseFragment<FragmentMainBinding, MainFragmentViewModel>() 
     }
 
     @Composable
-    fun ImageWithTitle(id: Int, title: String,click : () -> Any? = { }) {
+    fun ImageWithTitle(id: Int, title: String, click: () -> Any = { }) {
         Column(
             modifier = Modifier
                 .size(Dp(80F), Dp(100F))
