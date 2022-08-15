@@ -4,8 +4,8 @@ import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.luffy.smartplay.R
-import com.luffy.smartplay.db.bean.AlbumData
 import com.luffy.smartplay.databinding.MusicListViewBinding
+import com.luffy.smartplay.db.bean.AlbumData
 import com.luffy.smartplay.ui.base.BaseBindingAdapter
 import com.luffy.smartplay.ui.base.BindingViewHolder
 
@@ -20,8 +20,8 @@ class RecyclerViewAdapter(val list: List<AlbumData> = mutableListOf()) : BaseBin
             tvMusiclistName.text = list[position].albumName
             tvMusiclistCount.text = list[position].count.toString()
 
-            layoutListAvatar.background = if (list[position].backgroundPath != null) {
-                 Drawable.createFromPath(list[position].backgroundPath)
+            layoutListAvatar.background = if (list[position].albumAvatar != null) {
+                Drawable.createFromPath(list[position].albumAvatar)
             } else holder.itemView.context.resources.getDrawable(R.drawable.h1)
         }
 

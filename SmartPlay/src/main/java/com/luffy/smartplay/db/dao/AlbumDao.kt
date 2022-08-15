@@ -1,13 +1,8 @@
 package com.luffy.smartplay.db.dao
 
-import android.content.Context
-import android.database.Cursor
-import android.util.Log
-import androidx.room.Dao
-import androidx.room.Query
+import androidx.room.*
 import com.luffy.smartplay.db.bean.AlbumData
 import kotlinx.coroutines.flow.Flow
-import java.util.ArrayList
 
 /**
  * Created by axnshy on 16/8/9.
@@ -16,9 +11,19 @@ import java.util.ArrayList
 interface AlbumDao {
 
     @Query("SELECT * FROM albums ORDER BY createData DESC")
-    suspend fun queryAlbums() :List<AlbumData>
+    suspend fun queryAlbums(): List<AlbumData>
 
 
     @Query("SELECT * FROM albums ORDER BY createData DESC")
-    fun queryAlbumsFlow() : Flow<List<AlbumData>>
+    fun queryAlbumsFlow(): Flow<List<AlbumData>>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun createAlbum(album: AlbumData)
+
+    @Delete
+    suspend fun deleteAlbum(album: AlbumData)
+
+
+    @Query("SELECT * FROM albums WHERE albumId=:albumId LIMIT 1")
+    fun queryAlbumById(albumId: String): AlbumData
 }

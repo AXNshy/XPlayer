@@ -9,12 +9,12 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "albums")
 data class AlbumData (
     @PrimaryKey(autoGenerate = true)
-    var Id:Long,
-    var albumId:String ="",
+    var Id: Long = 0,
+    var albumId: String = "",
     var albumName: String? = null,
-    var modifiedData :Long = 0,
-    var createData :Long = 0,
-    var backgroundPath: String? = null,
+    var modifiedData: Long = 0,
+    var createData: Long = 0,
+    var albumAvatar: String? = null,
     var count: Int = 0,
     var description: String = "",
 )

@@ -14,10 +14,14 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Button
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
+import androidx.compose.material.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -25,9 +29,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.luffy.smartplay.R
@@ -55,6 +62,7 @@ class MainFragment : BaseFragment<FragmentMainBinding, MainFragmentViewModel>() 
         super.onViewCreated(view, savedInstanceState)
         viewBinding.composeContainer.setContent {
             HomeFragmentContent()
+            CreateAlbumDialog()
         }
     }
 
@@ -64,7 +72,7 @@ class MainFragment : BaseFragment<FragmentMainBinding, MainFragmentViewModel>() 
         val _state = viewModel.state.collectAsState()
         Column(
             modifier = Modifier
-                .wrapContentHeight(align = Alignment.Top)
+                .fillMaxHeight(1F)
                 .wrapContentWidth()
                 .background(Color(0xfff8f8ff)),
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -84,7 +92,9 @@ class MainFragment : BaseFragment<FragmentMainBinding, MainFragmentViewModel>() 
                     .fillMaxWidth(1F),
             ) {
                 ImageWithTitle(R.drawable.round_add_black_36, "添加歌曲")
-                ImageWithTitle(R.drawable.round_add_black_36, "添加歌单")
+                ImageWithTitle(R.drawable.round_add_black_36, "添加歌单", click = {
+                    viewModel.showCreateAlbumDialog()
+                })
                 ImageWithTitle(R.drawable.round_add_black_36, "本地扫描", click = {
                     lifecycleScope.launch(Dispatchers.IO) {
                         MusicRepository.scanMusic()
@@ -179,10 +189,35 @@ class MainFragment : BaseFragment<FragmentMainBinding, MainFragmentViewModel>() 
             horizontalArrangement = Arrangement.Start,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Image(painter = painterResource(id = R.drawable.play), contentDescription = "")
+            Image(painter = painterResource(id = R.drawable.icon_play), contentDescription = "")
             Text(text = album.albumName ?: "")
         }
     }
+
+    @Composable
+    fun CreateAlbumDialog(viewModel: MainFragmentViewModel = androidx.lifecycle.viewmodel.compose.viewModel()) {
+        val _state = viewModel.state.collectAsState()
+        if (_state.value.createAlbumDailog) {
+            var albumName = remember {
+                mutableStateOf("")
+            }
+            Dialog(onDismissRequest = { viewModel.dismissCreateAlbumDialog() }) {
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Text(text = "创建歌单", fontSize = TextUnit.Unspecified)
+                    TextField(value = "", onValueChange = {
+
+                    })
+
+                    Button(onClick = {
+                        viewModel.createAlbum(albumName.value)
+                    }) {
+                        Text(text = stringResource(id = R.string.album_create))
+                    }
+                }
+            }
+        }
+    }
+
 
     override fun bindViewBinding(
         inflater: LayoutInflater,

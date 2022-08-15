@@ -56,5 +56,6 @@
     <string name="music_filter_singer">歌手</string>
     <string name="music_filter_album">专辑</string>
     <string name="music_filter_folder">文件夹</string>
+    <string name="album_create">创建</string>
 
 </resources>

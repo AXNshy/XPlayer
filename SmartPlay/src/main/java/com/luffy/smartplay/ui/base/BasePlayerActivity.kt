@@ -2,17 +2,25 @@ package com.luffy.smartplay.ui.base
 
 import android.content.ComponentName
 import android.media.AudioManager
+import android.media.MediaMetadata
 import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
 import androidx.core.net.toUri
 import com.luffy.smartplay.db.bean.MusicData
 import com.luffy.smartplay.player.PlaybackService
+import com.luffy.smartplay.ui.widget.PlaybackControllerState
+import com.luffy.smartplay.utils.Logger
 
 abstract class BasePlayerActivity : AppCompatActivity() {
+    companion object {
+        const val TAG = "BasePlayerActivity"
+    }
 
     private lateinit var mediaBrowser: MediaBrowserCompat
     private lateinit var mediaController: MediaControllerCompat
@@ -27,6 +35,9 @@ abstract class BasePlayerActivity : AppCompatActivity() {
             null // optional Bundle
         )
     }
+
+    val playbackState: MutableState<PlaybackControllerState> =
+        mutableStateOf(PlaybackControllerState())
 
     public override fun onStart() {
         super.onStart()
@@ -75,9 +86,18 @@ abstract class BasePlayerActivity : AppCompatActivity() {
 
     private var controllerCallback = object : MediaControllerCompat.Callback() {
 
-        override fun onMetadataChanged(metadata: MediaMetadataCompat?) {}
+        override fun onMetadataChanged(metadata: MediaMetadataCompat?) {
+            Logger.d(TAG, "onMetadataChanged ${metadata?.mediaMetadata}")
+            playbackState.value = playbackState.value.copy(
+                name = (metadata?.mediaMetadata as MediaMetadata).getString(MediaMetadata.METADATA_KEY_TITLE),
+                singer = (metadata?.mediaMetadata as MediaMetadata).getString(MediaMetadata.METADATA_KEY_ARTIST)
+            )
+        }
 
-        override fun onPlaybackStateChanged(state: PlaybackStateCompat?) {}
+        override fun onPlaybackStateChanged(state: PlaybackStateCompat?) {
+            Logger.d(TAG, "onPlaybackStateChanged ${state?.playbackState}")
+
+        }
     }
 
     fun playOrPause() {
@@ -87,6 +107,15 @@ abstract class BasePlayerActivity : AppCompatActivity() {
         } else {
             mediaController.transportControls.play()
         }
+    }
+
+    fun getCurrentMusicName(): String {
+        return mediaController.metadata.getString("name")
+    }
+
+
+    fun getCurrentMusicSinger(): String {
+        return mediaController.metadata.getString("singer")
     }
 
     fun setMusicData(data: MusicData) {

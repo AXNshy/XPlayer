@@ -69,4 +69,8 @@ class MusicPlayer(var context: Context) {
         return DefaultExtractorsFactory()
     }
 
+
+    fun getCurrentMediaItem(): MediaItem? {
+        return exoPlayer?.currentMediaItem
+    }
 }

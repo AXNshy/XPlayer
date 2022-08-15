@@ -8,10 +8,10 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.luffy.smartplay.db.bean.AlbumData
-import com.luffy.smartplay.db.bean.MusicData
 import com.luffy.smartplay.databinding.DialogCollectBinding
 import com.luffy.smartplay.databinding.DialogListItemBinding
+import com.luffy.smartplay.db.bean.AlbumData
+import com.luffy.smartplay.db.bean.MusicData
 import com.luffy.smartplay.db.repo.MusicRepository
 import com.luffy.smartplay.ui.base.BaseBindingAdapter
 import com.luffy.smartplay.ui.base.BindingViewHolder
@@ -56,7 +56,7 @@ internal class Adapter(val list: List<AlbumData>) :
     override fun onBindViewHolder(holder: BindingViewHolder<DialogListItemBinding>, position: Int) {
         super.onBindViewHolder(holder, position)
         holder.holder.apply {
-            ivDialogListAvatar.setImageBitmap(BitmapFactory.decodeFile(list[position].backgroundPath))
+            ivDialogListAvatar.setImageBitmap(BitmapFactory.decodeFile(list[position].albumAvatar))
             tvDialogListName.text = list[position].albumName
         }
     }

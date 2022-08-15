@@ -12,6 +12,7 @@ import android.os.Build
 import android.os.Bundle
 import android.os.ResultReceiver
 import android.support.v4.media.MediaBrowserCompat
+import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import androidx.annotation.RequiresApi
@@ -170,6 +171,11 @@ class PlaybackService : MediaBrowserServiceCompat(), Config, MediaPlayer.OnPrepa
             Logger.d(LOG_TAG, "onPrepareFromUri $uri")
             if (uri != null) {
                 mPlayer!!.setMediaData(uri.path!!)
+                mediaSession.setMetadata(
+                    MediaMetadataCompat.Builder()
+                        .putString("name", "Title")
+                        .putString("singer", "singerXXXXXXX").build()
+                )
             }
         }
 

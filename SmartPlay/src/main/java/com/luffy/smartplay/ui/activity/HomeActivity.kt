@@ -8,6 +8,10 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.widget.Toolbar
+import androidx.compose.foundation.layout.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.core.app.ActivityCompat
 import androidx.core.view.GravityCompat
 import androidx.lifecycle.ViewModelProvider
@@ -19,8 +23,7 @@ import com.luffy.smartplay.player.PlaybackService
 import com.luffy.smartplay.ui.base.BaseActivity
 import com.luffy.smartplay.ui.fragment.MainFragment
 import com.luffy.smartplay.ui.viewmodel.HomeViewModel
-import com.luffy.smartplay.ui.widget.PlaybackControllerCallback
-import com.luffy.smartplay.ui.widget.PlaybackControllerUI
+import com.luffy.smartplay.ui.widget.SimpleController
 import com.luffy.smartplay.utils.AccountUtils
 import com.luffy.smartplay.utils.Logger
 import kotlinx.coroutines.Dispatchers
@@ -97,35 +100,47 @@ class HomeActivity : BaseActivity<ActivityLaunchBinding, HomeViewModel>(),
             supportFragmentManager.beginTransaction()
                 .replace(R.id.id_home_container, MainFragment()).commit()
             viewBinding.composeContainer.setContent {
-                PlaybackControllerUI(object : PlaybackControllerCallback {
-                    override fun onRepeat(value: Int) {
-                        Logger.d(TAG, "onRepeat mode: $value")
-                        lifecycleScope.launch {
-                            viewModel.switchRepeatMode()
-                        }
-                    }
+//                val controllerState = remember { mutableStateOf(PlaybackControllerState(name = getCurrentMusicName(), singer = getCurrentMusicSinger())) }
 
-                    override fun onPrevious() {
-                        Logger.d(TAG, "onPrevious")
-                    }
-
-                    override fun onPlayOrPause() {
-                        Logger.d(TAG, "onPlayOrPause")
-                        playOrPause()
-                    }
-
-                    override fun onNext() {
-                        Logger.d(TAG, "onNext")
-                    }
-
-                    override fun onShuffle(value: Int) {
-                        Logger.d(TAG, "onShuffle")
-                        lifecycleScope.launch {
-                            viewModel.switchShuffleMode()
-                        }
-                    }
-
-                })
+                Column(
+                    modifier = Modifier
+                        .padding(start = 30.dp, end = 30.dp, bottom = 20.dp)
+                        .wrapContentHeight()
+                        .fillMaxWidth(1F),
+                    verticalArrangement = Arrangement.Bottom,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    SimpleController(playbackState)
+                }
+//                PlaybackControllerUI(object : PlaybackControllerCallback {
+//                    override fun onRepeat(value: Int) {
+//                        Logger.d(TAG, "onRepeat mode: $value")
+//                        lifecycleScope.launch {
+//                            viewModel.switchRepeatMode()
+//                        }
+//                    }
+//
+//                    override fun onPrevious() {
+//                        Logger.d(TAG, "onPrevious")
+//                    }
+//
+//                    override fun onPlayOrPause() {
+//                        Logger.d(TAG, "onPlayOrPause")
+//                        playOrPause()
+//                    }
+//
+//                    override fun onNext() {
+//                        Logger.d(TAG, "onNext")
+//                    }
+//
+//                    override fun onShuffle(value: Int) {
+//                        Logger.d(TAG, "onShuffle")
+//                        lifecycleScope.launch {
+//                            viewModel.switchShuffleMode()
+//                        }
+//                    }
+//
+//                })
             }
         }
 
